@@ -2,891 +2,964 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
+
+<title>Desafio da Linha de Produção</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+}
 
-    <meta name="viewport"
-          content="width=device-width,
-                   initial-scale=1.0,
-                   maximum-scale=1.0,
-                   user-scalable=no">
+
+/* =========================
+   CÂMERA
+========================= */
+
+#camera {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+}
 
-    <title>Desafio da Linha de Produção</title>
 
-    <style>
+/* =========================
+   JOGO
+========================= */
 
-        * {
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-        }
+#jogo {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2;
+    overflow: hidden;
+    touch-action: none;
+}
 
-        html,
-        body {
-            margin: 0;
-            padding: 0;
 
-            width: 100%;
-            height: 100%;
+/* =========================
+   TELA INICIAL
+========================= */
 
-            overflow: hidden;
+#inicio {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
 
-            font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-            background: #111;
-        }
+    padding: 28px;
+    text-align: center;
 
+    color: white;
 
-        /* =========================================
-           CÂMERA
-        ========================================= */
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.84),
+            rgba(0,0,0,0.94)
+        );
+}
 
-        #camera {
+#inicio h1 {
+    margin: 0 0 10px;
+    font-size: 29px;
+}
 
-            position: fixed;
+#inicio h2 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: normal;
+}
 
-            top: 0;
-            left: 0;
+#inicio p {
+    max-width: 370px;
+    margin: 0 0 28px;
 
-            width: 100vw;
-            height: 100vh;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #ddd;
+}
 
-            object-fit: cover;
+#botaoIniciar,
+#botaoReiniciar {
 
-            z-index: 1;
-        }
+    border: none;
+    border-radius: 14px;
 
+    padding: 15px 28px;
 
-        /* =========================================
-           ÁREA DO JOGO
-        ========================================= */
+    background: #f2f2f2;
+    color: #111;
 
-        #jogo {
+    font-size: 17px;
+    font-weight: bold;
 
-            position: fixed;
+    cursor: pointer;
+}
 
-            top: 0;
-            left: 0;
 
-            width: 100vw;
-            height: 100vh;
+/* =========================
+   PAINEL
+========================= */
 
-            z-index: 2;
+#painel {
 
-            display: none;
+    position: absolute;
 
-            touch-action: none;
-        }
+    top: 15px;
+    left: 12px;
+    right: 12px;
 
+    z-index: 15;
 
-        /* =========================================
-           TELA INICIAL
-        ========================================= */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-        #inicio {
+    gap: 7px;
+}
 
-            position: fixed;
+.info {
 
-            inset: 0;
+    padding: 8px 10px;
 
-            z-index: 20;
+    border-radius: 11px;
 
-            display: flex;
+    background: rgba(0,0,0,0.75);
 
-            flex-direction: column;
+    color: white;
 
-            justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
 
-            align-items: center;
+    backdrop-filter: blur(5px);
+}
 
-            padding: 30px;
 
-            text-align: center;
+/* =========================
+   TÍTULO
+========================= */
 
-            color: white;
+#tituloJogo {
 
-            background:
-                linear-gradient(
-                    rgba(0,0,0,0.78),
-                    rgba(0,0,0,0.92)
-                );
-        }
+    position: absolute;
 
+    top: 58px;
+    left: 50%;
 
-        #inicio h1 {
+    transform: translateX(-50%);
 
-            margin: 0 0 12px;
+    z-index: 15;
 
-            font-size: 30px;
-        }
+    width: max-content;
+    max-width: 92%;
 
+    padding: 8px 13px;
 
-        #inicio h2 {
+    border-radius: 18px;
 
-            margin: 0 0 20px;
+    background: rgba(0,0,0,0.68);
 
-            font-size: 20px;
+    color: white;
 
-            font-weight: normal;
-        }
+    font-size: 12px;
+    font-weight: bold;
 
+    text-align: center;
+}
 
-        #inicio p {
 
-            max-width: 360px;
+/* =========================
+   ESTEIRA
+========================= */
 
-            margin: 0 0 30px;
+#esteira {
 
-            font-size: 16px;
+    position: absolute;
 
-            line-height: 1.5;
+    left: -5%;
+    width: 110%;
 
-            color: #ddd;
-        }
+    top: 50%;
 
+    height: 100px;
 
-        #botaoIniciar {
+    transform: translateY(-50%);
 
-            border: none;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #343434 0px,
+            #343434 35px,
+            #484848 35px,
+            #484848 70px
+        );
 
-            border-radius: 14px;
+    border-top: 6px solid #1b1b1b;
+    border-bottom: 6px solid #1b1b1b;
 
-            padding: 16px 32px;
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.65);
 
-            background: white;
+    overflow: hidden;
+}
 
-            color: #111;
 
-            font-size: 18px;
+/* movimento visual */
 
-            font-weight: bold;
+#esteira::after {
 
-            cursor: pointer;
-        }
+    content: "";
 
+    position: absolute;
+    inset: 0;
 
-        #botaoIniciar:active {
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 27px,
+            rgba(255,255,255,0.12) 27px,
+            rgba(255,255,255,0.12) 31px
+        );
 
-            transform: scale(0.96);
-        }
+    animation:
+        movimentoEsteira 0.7s linear infinite;
+}
 
+@keyframes movimentoEsteira {
 
-        /* =========================================
-           PAINEL SUPERIOR
-        ========================================= */
+    from {
+        transform: translateX(0);
+    }
 
-        #painel {
+    to {
+        transform: translateX(-56px);
+    }
+}
 
-            position: absolute;
 
-            top: 15px;
-            left: 15px;
-            right: 15px;
+/* =========================
+   SETORES
+========================= */
 
-            display: flex;
+.setor {
 
-            justify-content: space-between;
+    position: absolute;
 
-            align-items: center;
+    z-index: 8;
 
-            gap: 10px;
+    width: 28%;
 
-            z-index: 10;
-        }
+    min-height: 78px;
 
+    padding: 8px 5px;
 
-        .info {
+    border-radius: 13px;
 
-            padding: 10px 14px;
+    background: rgba(0,0,0,0.76);
 
-            border-radius: 12px;
+    border: 2px dashed rgba(255,255,255,0.7);
 
-            background:
-                rgba(0,0,0,0.72);
+    color: white;
 
-            color: white;
+    text-align: center;
 
-            font-size: 14px;
+    font-size: 10px;
 
-            font-weight: bold;
+    line-height: 1.2;
 
-            backdrop-filter: blur(5px);
-        }
+    transition:
+        transform 0.2s,
+        background 0.2s;
+}
 
+.setor .icone {
 
-        /* =========================================
-           TÍTULO
-        ========================================= */
+    display: block;
 
-        #tituloJogo {
+    font-size: 23px;
 
-            position: absolute;
+    margin-bottom: 3px;
+}
 
-            top: 70px;
+.setor .nome {
 
-            left: 50%;
+    display: block;
 
-            transform: translateX(-50%);
+    font-size: 10px;
 
-            z-index: 10;
+    font-weight: bold;
+}
 
-            width: max-content;
+.setor .subtitulo {
 
-            max-width: 90%;
+    display: block;
 
-            padding: 9px 16px;
+    margin-top: 3px;
 
-            border-radius: 20px;
+    color: #ccc;
 
-            background:
-                rgba(0,0,0,0.65);
+    font-size: 8px;
+}
 
-            color: white;
 
-            font-size: 14px;
+/* setores espalhados */
 
-            text-align: center;
-        }
+#recebimento {
+    left: 4%;
+    top: 18%;
+}
 
+#montagem {
+    right: 4%;
+    top: 18%;
+}
 
-        /* =========================================
-           LINHA DE PRODUÇÃO
-        ========================================= */
+#inspecao {
+    left: 5%;
+    bottom: 9%;
+}
 
-        #linhaProducao {
+#separacao {
+    right: 5%;
+    bottom: 9%;
+}
 
-            position: absolute;
+#expedicao {
+    left: 36%;
+    bottom: 7%;
+}
 
-            left: 5%;
 
-            right: 5%;
+/* =========================
+   CAIXAS
+========================= */
 
-            top: 42%;
+.caixa {
 
-            height: 95px;
+    position: absolute;
 
-            border-radius: 18px;
+    z-index: 12;
 
-            background:
-                repeating-linear-gradient(
-                    90deg,
-                    #444 0px,
-                    #444 25px,
-                    #555 25px,
-                    #555 50px
-                );
+    width: 128px;
+    min-height: 65px;
 
-            border: 5px solid #222;
+    padding: 9px;
 
-            box-shadow:
-                0 8px 20px
-                rgba(0,0,0,0.5);
-        }
+    border-radius: 7px;
 
+    background:
+        linear-gradient(
+            145deg,
+            #c9a06f,
+            #a97847
+        );
 
-        /* =========================================
-           ESTEIRA
-        ========================================= */
+    border: 3px solid #704522;
 
-        #esteira {
+    color: #24170e;
 
-            position: absolute;
+    box-shadow:
+        0 7px 14px rgba(0,0,0,0.58);
 
-            top: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-            left: 2%;
+    text-align: center;
 
-            right: 2%;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1.25;
 
-            height: 7px;
+    cursor: grab;
 
-            background: #111;
+    touch-action: none;
 
-            transform: translateY(-50%);
+    transition:
+        box-shadow 0.15s,
+        transform 0.15s;
+}
 
-            border-radius: 10px;
-        }
 
+/* fita no meio da caixa */
 
-        /* =========================================
-           ESTAÇÕES
-        ========================================= */
+.caixa::before {
 
-        .estacao {
+    content: "";
 
-            position: absolute;
+    position: absolute;
 
-            top: calc(42% + 115px);
+    top: 0;
+    bottom: 0;
 
-            width: 18%;
+    left: 50%;
 
-            min-height: 75px;
+    width: 2px;
 
-            border-radius: 14px;
+    background: rgba(80,45,20,0.24);
 
-            background:
-                rgba(0,0,0,0.72);
+    transform: translateX(-50%);
+}
 
-            border: 2px dashed rgba(255,255,255,0.7);
 
-            color: white;
+.caixa:active {
 
-            text-align: center;
+    cursor: grabbing;
 
-            padding: 10px 5px;
+    transform: scale(1.06);
 
-            font-size: 11px;
+    box-shadow:
+        0 12px 24px rgba(0,0,0,0.7);
+}
 
-            z-index: 4;
-        }
 
+/* quando organizada */
 
-        .estacao span {
+.caixa.correta {
 
-            display: block;
+    display: none;
+}
 
-            font-size: 22px;
 
-            margin-bottom: 3px;
-        }
+/* =========================
+   MENSAGEM
+========================= */
 
+#mensagem {
 
-        #estacao1 {
+    position: absolute;
 
-            left: 4%;
-        }
+    z-index: 20;
 
+    bottom: 15px;
 
-        #estacao2 {
+    left: 50%;
 
-            left: 21%;
-        }
+    transform: translateX(-50%);
 
+    width: 92%;
+    max-width: 420px;
 
-        #estacao3 {
+    padding: 9px 13px;
 
-            left: 41%;
-        }
+    border-radius: 12px;
 
+    background: rgba(0,0,0,0.78);
 
-        #estacao4 {
+    color: white;
 
-            left: 61%;
-        }
+    text-align: center;
 
+    font-size: 11px;
 
-        #estacao5 {
+    line-height: 1.3;
+}
 
-            right: 4%;
-        }
 
+/* =========================
+   TELA FINAL
+========================= */
 
-        /* =========================================
-           CAIXAS
-        ========================================= */
+#final {
 
-        .caixa {
+    position: fixed;
 
-            position: absolute;
+    inset: 0;
 
-            width: 58px;
+    z-index: 30;
 
-            height: 58px;
+    display: none;
 
-            border-radius: 9px;
+    flex-direction: column;
 
-            display: flex;
+    justify-content: center;
+    align-items: center;
 
-            justify-content: center;
+    padding: 30px;
 
-            align-items: center;
+    text-align: center;
 
-            color: white;
+    color: white;
 
-            font-size: 26px;
+    background:
+        rgba(0,0,0,0.93);
+}
 
-            font-weight: bold;
+#final h1 {
 
-            cursor: grab;
+    margin: 0 0 18px;
 
-            z-index: 8;
+    font-size: 29px;
+}
 
-            touch-action: none;
+#mensagemFinal {
 
-            box-shadow:
-                0 6px 15px
-                rgba(0,0,0,0.45);
+    max-width: 370px;
 
-            border: 3px solid rgba(255,255,255,0.8);
+    font-size: 18px;
 
-            transition:
-                transform 0.15s;
-        }
+    line-height: 1.5;
+}
 
+#resultado {
 
-        .caixa:active {
+    margin-top: 18px;
 
-            cursor: grabbing;
+    font-size: 16px;
 
-            transform: scale(1.1);
-        }
+    line-height: 1.7;
+}
 
 
-        .caixa.correta {
+/* =========================
+   TEMPO ESGOTADO
+========================= */
 
-            opacity: 0.55;
+#tempoEsgotado {
 
-            pointer-events: none;
+    position: fixed;
 
-            transform: scale(0.9);
-        }
+    inset: 0;
 
+    z-index: 31;
 
-        #caixa1 {
+    display: none;
 
-            background: #d35400;
+    flex-direction: column;
 
-            left: 10%;
+    justify-content: center;
+    align-items: center;
 
-            top: 22%;
-        }
+    padding: 30px;
 
+    text-align: center;
 
-        #caixa2 {
+    color: white;
 
-            background: #2980b9;
+    background:
+        rgba(0,0,0,0.94);
+}
 
-            left: 28%;
+#tempoEsgotado h1 {
 
-            top: 25%;
-        }
+    font-size: 30px;
+    margin-bottom: 12px;
+}
 
+#tempoEsgotado p {
 
-        #caixa3 {
+    max-width: 350px;
 
-            background: #27ae60;
+    font-size: 17px;
 
-            left: 46%;
+    line-height: 1.5;
+}
 
-            top: 20%;
-        }
 
+/* =========================
+   ERRO
+========================= */
 
-        #caixa4 {
+#erro {
 
-            background: #8e44ad;
+    position: fixed;
 
-            left: 64%;
+    left: 20px;
+    right: 20px;
+    bottom: 25px;
 
-            top: 26%;
-        }
+    z-index: 50;
 
+    display: none;
 
-        #caixa5 {
+    padding: 15px;
 
-            background: #c0392b;
+    border-radius: 12px;
 
-            left: 80%;
+    background: rgba(160,0,0,0.93);
 
-            top: 19%;
-        }
+    color: white;
 
+    text-align: center;
 
-        /* =========================================
-           MENSAGEM
-        ========================================= */
+    font-size: 14px;
+}
 
-        #mensagem {
-
-            position: absolute;
-
-            bottom: 25px;
-
-            left: 50%;
-
-            transform: translateX(-50%);
-
-            width: 90%;
-
-            max-width: 400px;
-
-            padding: 13px 18px;
-
-            border-radius: 13px;
-
-            background:
-                rgba(0,0,0,0.75);
-
-            color: white;
-
-            font-size: 14px;
-
-            text-align: center;
-
-            z-index: 12;
-
-            backdrop-filter: blur(5px);
-        }
-
-
-        /* =========================================
-           TELA FINAL
-        ========================================= */
-
-        #final {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 30;
-
-            display: none;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-            align-items: center;
-
-            padding: 30px;
-
-            text-align: center;
-
-            color: white;
-
-            background:
-                rgba(0,0,0,0.88);
-        }
-
-
-        #final h1 {
-
-            font-size: 32px;
-
-            margin-bottom: 15px;
-        }
-
-
-        #final p {
-
-            font-size: 18px;
-
-            line-height: 1.5;
-
-            max-width: 350px;
-        }
-
-
-        #botaoReiniciar {
-
-            margin-top: 20px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            padding: 14px 25px;
-
-            font-size: 17px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        /* =========================================
-           ERRO
-        ========================================= */
-
-        #erro {
-
-            position: fixed;
-
-            left: 20px;
-            right: 20px;
-
-            bottom: 25px;
-
-            z-index: 50;
-
-            display: none;
-
-            padding: 15px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(180,0,0,0.92);
-
-            color: white;
-
-            text-align: center;
-
-            font-size: 14px;
-        }
-
-    </style>
-
+</style>
 </head>
 
 
 <body>
 
 
-    <!-- =========================================
-         CÂMERA
-    ========================================= -->
+<!-- =========================
+     CÂMERA
+========================= -->
 
-    <video
-        id="camera"
-        autoplay
-        playsinline
-        muted>
-    </video>
+<video
+    id="camera"
+    autoplay
+    playsinline
+    muted>
+</video>
 
 
-    <!-- =========================================
-         TELA INICIAL
-    ========================================= -->
+<!-- =========================
+     TELA INICIAL
+========================= -->
 
-    <div id="inicio">
+<div id="inicio">
 
-        <h1>🏭 Linha de Produção</h1>
+    <h1>🏭 Desafio da Linha de Produção</h1>
 
-        <h2>Desafio de Engenharia de Produção</h2>
+    <h2>Simulação de Engenharia de Produção</h2>
 
-        <p>
+    <p>
 
-            Organize as 5 caixas nas estações
-            corretas da linha de produção.
+        Cinco caixas estão chegando pela
+        linha de produção.
 
-            Arraste cada caixa até o seu destino.
+        Observe as informações de cada caixa
+        e encaminhe-a para o setor adequado.
 
-        </p>
+        <br><br>
 
-        <button id="botaoIniciar">
+        <strong>Atenção:</strong>
+        você terá <strong>30 segundos</strong>
+        para organizar toda a produção.
 
-            Iniciar desafio
+    </p>
 
-        </button>
+    <button id="botaoIniciar">
+        Iniciar desafio
+    </button>
+
+</div>
+
+
+<!-- =========================
+     JOGO
+========================= -->
+
+<div id="jogo">
+
+
+    <!-- PAINEL -->
+
+    <div id="painel">
+
+        <div class="info">
+            📦 <span id="contador">0</span>/5
+        </div>
+
+        <div class="info">
+            ❌ <span id="erros">0</span>
+        </div>
+
+        <div class="info">
+            ⏱️ <span id="tempo">30</span>s
+        </div>
 
     </div>
 
 
-    <!-- =========================================
-         JOGO
-    ========================================= -->
-
-    <div id="jogo">
+    <div id="tituloJogo">
+        ORGANIZE O FLUXO DA FÁBRICA
+    </div>
 
 
-        <!-- PAINEL -->
+    <!-- ESTEIRA -->
 
-        <div id="painel">
-
-            <div class="info">
-
-                📦 <span id="contador">0</span>/5
-
-            </div>
-
-            <div class="info">
-
-                ⏱️ <span id="tempo">00:00</span>
-
-            </div>
-
-        </div>
+    <div id="esteira"></div>
 
 
-        <!-- TÍTULO -->
-
-        <div id="tituloJogo">
-
-            ORGANIZE A LINHA DE PRODUÇÃO
-
-        </div>
+    <!-- =========================
+         SETORES
+    ========================= -->
 
 
-        <!-- LINHA -->
+    <div
+        class="setor"
+        id="recebimento">
 
-        <div id="linhaProducao">
+        <span class="icone">📥</span>
 
-            <div id="esteira"></div>
+        <span class="nome">
+            RECEBIMENTO
+        </span>
 
-        </div>
+        <span class="subtitulo">
+            entrada de materiais
+        </span>
 
-
-        <!-- ESTAÇÕES -->
-
-        <div
-            class="estacao"
-            id="estacao1"
-            data-destino="1">
-
-            <span>📥</span>
-
-            MATÉRIA-PRIMA
-
-        </div>
+    </div>
 
 
-        <div
-            class="estacao"
-            id="estacao2"
-            data-destino="2">
+    <div
+        class="setor"
+        id="montagem">
 
-            <span>🔀</span>
+        <span class="icone">⚙️</span>
 
-            SEPARAÇÃO
-
-        </div>
-
-
-        <div
-            class="estacao"
-            id="estacao3"
-            data-destino="3">
-
-            <span>⚙️</span>
-
+        <span class="nome">
             MONTAGEM
+        </span>
 
-        </div>
+        <span class="subtitulo">
+            transformação
+        </span>
+
+    </div>
 
 
-        <div
-            class="estacao"
-            id="estacao4"
-            data-destino="4">
+    <div
+        class="setor"
+        id="inspecao">
 
-            <span>🔍</span>
+        <span class="icone">🔍</span>
 
+        <span class="nome">
             INSPEÇÃO
+        </span>
 
-        </div>
-
-
-        <div
-            class="estacao"
-            id="estacao5"
-            data-destino="5">
-
-            <span>📤</span>
-
-            PRODUTO FINAL
-
-        </div>
-
-
-        <!-- =====================================
-             CAIXAS
-        ===================================== -->
-
-        <div
-            class="caixa"
-            id="caixa1"
-            data-destino="1">
-
-            1
-
-        </div>
-
-
-        <div
-            class="caixa"
-            id="caixa2"
-            data-destino="2">
-
-            2
-
-        </div>
-
-
-        <div
-            class="caixa"
-            id="caixa3"
-            data-destino="3">
-
-            3
-
-        </div>
-
-
-        <div
-            class="caixa"
-            id="caixa4"
-            data-destino="4">
-
-            4
-
-        </div>
-
-
-        <div
-            class="caixa"
-            id="caixa5"
-            data-destino="5">
-
-            5
-
-        </div>
-
-
-        <!-- MENSAGEM -->
-
-        <div id="mensagem">
-
-            Arraste cada caixa para a estação correta.
-
-        </div>
-
+        <span class="subtitulo">
+            controle de qualidade
+        </span>
 
     </div>
 
 
-    <!-- =========================================
-         TELA FINAL
-    ========================================= -->
+    <div
+        class="setor"
+        id="separacao">
 
-    <div id="final">
+        <span class="icone">🔀</span>
 
-        <h1>🎉 Produção concluída!</h1>
+        <span class="nome">
+            SEPARAÇÃO
+        </span>
 
-        <p>
-
-            Você organizou corretamente
-            as 5 caixas da linha de produção.
-
-        </p>
-
-        <p>
-
-            Tempo:
-            <strong id="tempoFinal">
-                00:00
-            </strong>
-
-        </p>
-
-        <button id="botaoReiniciar">
-
-            Jogar novamente
-
-        </button>
+        <span class="subtitulo">
+            organização de componentes
+        </span>
 
     </div>
 
 
-    <!-- ERRO -->
+    <div
+        class="setor"
+        id="expedicao">
 
-    <div id="erro">
+        <span class="icone">📤</span>
 
-        Não foi possível acessar a câmera.
-        Verifique a permissão do navegador.
+        <span class="nome">
+            EXPEDIÇÃO
+        </span>
+
+        <span class="subtitulo">
+            saída de produtos
+        </span>
 
     </div>
+
+
+    <!-- =========================
+         CAIXAS
+    ========================= -->
+
+
+    <div
+        class="caixa"
+        id="caixa1"
+        data-setor="montagem">
+
+        Kit de componentes
+        para fabricação
+
+    </div>
+
+
+    <div
+        class="caixa"
+        id="caixa2"
+        data-setor="recebimento">
+
+        Lote 08 —
+        recebimento de fornecedor
+
+    </div>
+
+
+    <div
+        class="caixa"
+        id="caixa3"
+        data-setor="inspecao">
+
+        Amostra 23 —
+        verificar dimensões
+
+    </div>
+
+
+    <div
+        class="caixa"
+        id="caixa4"
+        data-setor="separacao">
+
+        Kit 04 —
+        componentes A, B e C
+
+    </div>
+
+
+    <div
+        class="caixa"
+        id="caixa5"
+        data-setor="expedicao">
+
+        Pedido 482 —
+        produto finalizado
+
+    </div>
+
+
+    <!-- MENSAGEM -->
+
+    <div id="mensagem">
+
+        Observe as informações das caixas
+        e encaminhe cada uma ao setor correto.
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FINAL - VITÓRIA
+========================= -->
+
+<div id="final">
+
+    <h1>🏆 Desafio concluído!</h1>
+
+    <div id="mensagemFinal">
+
+        <strong>
+            5/5 caixas organizadas -
+            desafio concluído!
+        </strong>
+
+        <br><br>
+
+        Você é um excelente
+        Engenheiro de Produção!
+
+    </div>
+
+    <div id="resultado">
+
+        ⏱️ Tempo utilizado:
+        <span id="tempoFinal">00</span>s
+
+        <br>
+
+        ❌ Erros:
+        <span id="errosFinal">0</span>
+
+    </div>
+
+    <br>
+
+    <button
+        id="botaoReiniciar">
+
+        Jogar novamente
+
+    </button>
+
+</div>
+
+
+<!-- =========================
+     TEMPO ESGOTADO
+========================= -->
+
+<div id="tempoEsgotado">
+
+    <h1>⏰ Tempo esgotado!</h1>
+
+    <p>
+
+        A produção não foi completamente
+        organizada desta vez.
+
+        <br><br>
+
+        Você conseguiu organizar:
+
+        <strong>
+            <span id="caixasNoFinal">0</span>/5
+        </strong>
+
+        caixas.
+
+    </p>
+
+    <p>
+
+        Tente novamente e veja se consegue
+        organizar toda a produção dentro
+        dos 30 segundos!
+
+    </p>
+
+    <button
+        id="botaoReiniciarTempo">
+
+        Tentar novamente
+
+    </button>
+
+</div>
+
+
+<!-- ERRO DE CÂMERA -->
+
+<div id="erro">
+
+    Não foi possível acessar a câmera.
+    Verifique a permissão do navegador.
+
+</div>
 
 
 
@@ -894,7 +967,7 @@
 
 
 /* =========================================
-   VARIÁVEIS
+   ELEMENTOS
 ========================================= */
 
 const botaoIniciar =
@@ -902,6 +975,11 @@ const botaoIniciar =
 
 const botaoReiniciar =
     document.getElementById("botaoReiniciar");
+
+const botaoReiniciarTempo =
+    document.getElementById(
+        "botaoReiniciarTempo"
+    );
 
 const inicio =
     document.getElementById("inicio");
@@ -915,38 +993,108 @@ const camera =
 const final =
     document.getElementById("final");
 
+const tempoEsgotado =
+    document.getElementById(
+        "tempoEsgotado"
+    );
+
 const erro =
     document.getElementById("erro");
 
 const contador =
     document.getElementById("contador");
 
-const tempo =
+const errosElemento =
+    document.getElementById("erros");
+
+const tempoElemento =
     document.getElementById("tempo");
 
 const tempoFinal =
     document.getElementById("tempoFinal");
 
+const errosFinal =
+    document.getElementById("errosFinal");
+
+const caixasNoFinal =
+    document.getElementById(
+        "caixasNoFinal"
+    );
+
 const mensagem =
     document.getElementById("mensagem");
 
 
-let caixasCorretas = 0;
+/* =========================================
+   CONFIGURAÇÕES
+========================================= */
 
-let segundos = 0;
+const TEMPO_TOTAL = 30;
 
-let intervaloTempo = null;
-
-let caixaSelecionada = null;
-
-let offsetX = 0;
-
-let offsetY = 0;
-
+const VELOCIDADE_ESTEIRA = 0.065;
 
 
 /* =========================================
-   INICIAR
+   VARIÁVEIS DO JOGO
+========================================= */
+
+let tempoRestante = TEMPO_TOTAL;
+
+let caixasCorretas = 0;
+
+let quantidadeErros = 0;
+
+let intervaloTempo = null;
+
+let animacaoEsteira = null;
+
+let jogoAtivo = false;
+
+
+/* =========================================
+   CAIXAS
+========================================= */
+
+const caixas =
+    Array.from(
+        document.querySelectorAll(".caixa")
+    );
+
+
+/*
+   Posições das caixas na esteira.
+
+   Cada caixa possui uma posição horizontal
+   independente.
+*/
+
+const dadosCaixas =
+    caixas.map(
+        function(caixa, indice) {
+
+            return {
+
+                elemento: caixa,
+
+                x:
+                    -150
+                    -
+                    (indice * 230),
+
+                y: 0,
+
+                selecionada: false,
+
+                organizada: false
+
+            };
+
+        }
+    );
+
+
+/* =========================================
+   INICIAR JOGO
 ========================================= */
 
 async function iniciarJogo() {
@@ -954,7 +1102,8 @@ async function iniciarJogo() {
     try {
 
         const stream =
-            await navigator.mediaDevices.getUserMedia({
+            await navigator.mediaDevices
+            .getUserMedia({
 
                 video: {
 
@@ -977,7 +1126,31 @@ async function iniciarJogo() {
         jogo.style.display = "block";
 
 
+        prepararCaixas();
+
+
+        tempoRestante =
+            TEMPO_TOTAL;
+
+        caixasCorretas = 0;
+
+        quantidadeErros = 0;
+
+
+        contador.innerText = "0";
+
+        errosElemento.innerText = "0";
+
+        tempoElemento.innerText =
+            tempoRestante;
+
+
+        jogoAtivo = true;
+
+
         iniciarCronometro();
+
+        iniciarEsteira();
 
     }
 
@@ -992,6 +1165,47 @@ async function iniciarJogo() {
 }
 
 
+/* =========================================
+   PREPARAR CAIXAS
+========================================= */
+
+function prepararCaixas() {
+
+    /*
+       Embaralha as caixas.
+    */
+
+    const dadosEmbaralhados =
+        [...dadosCaixas]
+        .sort(
+            () => Math.random() - 0.5
+        );
+
+
+    dadosEmbaralhados.forEach(
+        function(dado, indice) {
+
+            dado.x =
+                -160
+                -
+                (indice * 210);
+
+            dado.organizada = false;
+
+            dado.selecionada = false;
+
+            dado.elemento.classList.remove(
+                "correta"
+            );
+
+            dado.elemento.style.display =
+                "flex";
+
+        }
+    );
+
+}
+
 
 /* =========================================
    CRONÔMETRO
@@ -999,101 +1213,220 @@ async function iniciarJogo() {
 
 function iniciarCronometro() {
 
-    segundos = 0;
-
-    atualizarTempo();
+    clearInterval(intervaloTempo);
 
 
     intervaloTempo =
-        setInterval(function() {
+        setInterval(
 
-            segundos++;
+            function() {
 
-            atualizarTempo();
+                if (!jogoAtivo) {
+                    return;
+                }
 
-        }, 1000);
+
+                tempoRestante--;
+
+
+                tempoElemento.innerText =
+                    tempoRestante;
+
+
+                if (tempoRestante <= 0) {
+
+                    terminarPorTempo();
+
+                }
+
+            },
+
+            1000
+        );
 
 }
-
-
-
-function atualizarTempo() {
-
-    const minutos =
-        Math.floor(segundos / 60);
-
-    const segundosRestantes =
-        segundos % 60;
-
-
-    tempo.innerText =
-        String(minutos).padStart(2, "0")
-        + ":"
-        +
-        String(segundosRestantes).padStart(2, "0");
-
-}
-
 
 
 /* =========================================
-   CAIXAS
+   ESTEIRA
 ========================================= */
 
-const caixas =
-    document.querySelectorAll(".caixa");
+function iniciarEsteira() {
 
-
-caixas.forEach(function(caixa) {
-
-    caixa.addEventListener(
-        "pointerdown",
-        iniciarArraste
+    cancelAnimationFrame(
+        animacaoEsteira
     );
 
-});
 
+    function mover() {
+
+        if (!jogoAtivo) {
+            return;
+        }
+
+
+        const larguraTela =
+            window.innerWidth;
+
+
+        const esteiraTop =
+            window.innerHeight * 0.50;
+
+
+        dadosCaixas.forEach(
+            function(dado) {
+
+                if (
+                    dado.organizada ||
+                    dado.selecionada
+                ) {
+                    return;
+                }
+
+
+                /*
+                   Move a caixa.
+                */
+
+                dado.x +=
+                    VELOCIDADE_ESTEIRA
+                    *
+                    60;
+
+
+                /*
+                   Se saiu completamente
+                   pela direita, volta
+                   para o começo.
+                */
+
+                if (
+                    dado.x >
+                    larguraTela + 30
+                ) {
+
+                    dado.x = -150;
+
+                }
+
+
+                dado.elemento.style.left =
+                    dado.x + "px";
+
+
+                dado.elemento.style.top =
+                    (
+                        esteiraTop - 32
+                    )
+                    +
+                    "px";
+
+            }
+        );
+
+
+        animacaoEsteira =
+            requestAnimationFrame(
+                mover
+            );
+
+    }
+
+
+    mover();
+
+}
 
 
 /* =========================================
-   COMEÇAR ARRASTE
+   ARRASTAR CAIXA
 ========================================= */
+
+caixas.forEach(
+    function(caixa) {
+
+        caixa.addEventListener(
+            "pointerdown",
+            iniciarArraste
+        );
+
+    }
+);
+
+
+let caixaArrastada = null;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
 
 function iniciarArraste(evento) {
 
-    caixaSelecionada =
+    if (!jogoAtivo) {
+        return;
+    }
+
+
+    const caixa =
         evento.currentTarget;
 
 
+    const dado =
+        dadosCaixas.find(
+            function(item) {
+
+                return item.elemento === caixa;
+
+            }
+        );
+
+
+    if (!dado || dado.organizada) {
+        return;
+    }
+
+
+    caixaArrastada =
+        dado;
+
+
+    dado.selecionada = true;
+
+
     const rect =
-        caixaSelecionada.getBoundingClientRect();
+        caixa.getBoundingClientRect();
 
 
     offsetX =
         evento.clientX - rect.left;
 
+
     offsetY =
         evento.clientY - rect.top;
 
 
-    caixaSelecionada.setPointerCapture(
+    caixa.setPointerCapture(
         evento.pointerId
     );
 
 
-    caixaSelecionada.addEventListener(
+    caixa.addEventListener(
         "pointermove",
         moverCaixa
     );
 
 
-    caixaSelecionada.addEventListener(
+    caixa.addEventListener(
         "pointerup",
         soltarCaixa
     );
 
-}
 
+    mensagem.innerText =
+        "Leve esta caixa até o setor que você considera correto.";
+
+}
 
 
 /* =========================================
@@ -1102,19 +1435,17 @@ function iniciarArraste(evento) {
 
 function moverCaixa(evento) {
 
-    if (!caixaSelecionada) {
+    if (!caixaArrastada) {
         return;
     }
 
 
-    const jogoRect =
-        jogo.getBoundingClientRect();
+    const caixa =
+        caixaArrastada.elemento;
 
 
     let x =
         evento.clientX
-        -
-        jogoRect.left
         -
         offsetX;
 
@@ -1122,45 +1453,47 @@ function moverCaixa(evento) {
     let y =
         evento.clientY
         -
-        jogoRect.top
-        -
         offsetY;
 
 
-    const limiteX =
-        jogoRect.width
-        -
-        caixaSelecionada.offsetWidth;
-
-
-    const limiteY =
-        jogoRect.height
-        -
-        caixaSelecionada.offsetHeight;
-
+    /*
+       Mantém a caixa dentro da tela.
+    */
 
     x =
         Math.max(
             0,
-            Math.min(x, limiteX)
+            Math.min(
+                x,
+                window.innerWidth
+                -
+                caixa.offsetWidth
+            )
         );
 
 
     y =
         Math.max(
-            0,
-            Math.min(y, limiteY)
+            80,
+            Math.min(
+                y,
+                window.innerHeight
+                -
+                caixa.offsetHeight
+                -
+                10
+            )
         );
 
 
-    caixaSelecionada.style.left =
+    caixa.style.left =
         x + "px";
 
-    caixaSelecionada.style.top =
+
+    caixa.style.top =
         y + "px";
 
 }
-
 
 
 /* =========================================
@@ -1169,13 +1502,17 @@ function moverCaixa(evento) {
 
 function soltarCaixa(evento) {
 
-    if (!caixaSelecionada) {
+    if (!caixaArrastada) {
         return;
     }
 
 
+    const dado =
+        caixaArrastada;
+
+
     const caixa =
-        caixaSelecionada;
+        dado.elemento;
 
 
     caixa.removeEventListener(
@@ -1190,28 +1527,31 @@ function soltarCaixa(evento) {
     );
 
 
-    verificarDestino(caixa);
+    verificarDestino(dado);
 
 
-    caixaSelecionada = null;
+    caixaArrastada = null;
 
 }
-
 
 
 /* =========================================
    VERIFICAR DESTINO
 ========================================= */
 
-function verificarDestino(caixa) {
+function verificarDestino(dado) {
 
-    const numero =
-        caixa.dataset.destino;
+    const caixa =
+        dado.elemento;
 
 
-    const estacao =
+    const setorCorreto =
+        caixa.dataset.setor;
+
+
+    const setor =
         document.getElementById(
-            "estacao" + numero
+            setorCorreto
         );
 
 
@@ -1219,57 +1559,62 @@ function verificarDestino(caixa) {
         caixa.getBoundingClientRect();
 
 
-    const estacaoRect =
-        estacao.getBoundingClientRect();
+    const setorRect =
+        setor.getBoundingClientRect();
 
 
-    const centroCaixaX =
+    const centroX =
         caixaRect.left
         +
         caixaRect.width / 2;
 
 
-    const centroCaixaY =
+    const centroY =
         caixaRect.top
         +
         caixaRect.height / 2;
 
 
-    const dentroDaEstacao =
+    const dentroDoSetor =
 
-        centroCaixaX >= estacaoRect.left
+        centroX >= setorRect.left
         &&
-        centroCaixaX <=
-        estacaoRect.right
-
+        centroX <= setorRect.right
         &&
-
-        centroCaixaY >= estacaoRect.top
+        centroY >= setorRect.top
         &&
-        centroCaixaY <=
-        estacaoRect.bottom;
+        centroY <= setorRect.bottom;
 
 
+    if (dentroDoSetor) {
 
-    if (dentroDaEstacao) {
+        /*
+           ACERTO
+        */
 
-        caixa.classList.add("correta");
+        dado.organizada = true;
+
+        dado.selecionada = false;
+
+        caixa.classList.add(
+            "correta"
+        );
+
 
         caixasCorretas++;
+
 
         contador.innerText =
             caixasCorretas;
 
 
         mensagem.innerText =
-            "✅ Caixa " +
-            numero +
-            " organizada corretamente!";
+            "✅ Boa decisão! A caixa foi encaminhada corretamente.";
 
 
         if (caixasCorretas === 5) {
 
-            finalizarJogo();
+            finalizarVitoria();
 
         }
 
@@ -1277,38 +1622,133 @@ function verificarDestino(caixa) {
 
     else {
 
+        /*
+           ERRO
+        */
+
+        quantidadeErros++;
+
+
+        errosElemento.innerText =
+            quantidadeErros;
+
+
         mensagem.innerText =
-            "❌ Essa caixa não está na estação correta. Tente novamente.";
+            "❌ Destino incorreto. A caixa voltará para a esteira.";
+
+
+        /*
+           Retorna a caixa para o início
+           da esteira.
+        */
+
+        dado.x = -150;
+
+        dado.selecionada = false;
+
+
+        caixa.style.left =
+            dado.x + "px";
+
+
+        caixa.style.top =
+            (
+                window.innerHeight * 0.50
+                -
+                32
+            )
+            +
+            "px";
 
     }
 
 }
 
 
-
 /* =========================================
-   FINALIZAR
+   VITÓRIA
 ========================================= */
 
-function finalizarJogo() {
+function finalizarVitoria() {
 
-    clearInterval(intervaloTempo);
+    jogoAtivo = false;
+
+
+    clearInterval(
+        intervaloTempo
+    );
+
+
+    cancelAnimationFrame(
+        animacaoEsteira
+    );
 
 
     tempoFinal.innerText =
-        tempo.innerText;
+        TEMPO_TOTAL - tempoRestante;
 
 
-    setTimeout(function() {
+    errosFinal.innerText =
+        quantidadeErros;
 
-        jogo.style.display = "none";
 
-        final.style.display = "flex";
+    setTimeout(
 
-    }, 700);
+        function() {
+
+            jogo.style.display =
+                "none";
+
+            final.style.display =
+                "flex";
+
+        },
+
+        500
+    );
 
 }
 
+
+/* =========================================
+   TEMPO ESGOTADO
+========================================= */
+
+function terminarPorTempo() {
+
+    jogoAtivo = false;
+
+
+    clearInterval(
+        intervaloTempo
+    );
+
+
+    cancelAnimationFrame(
+        animacaoEsteira
+    );
+
+
+    caixasNoFinal.innerText =
+        caixasCorretas;
+
+
+    setTimeout(
+
+        function() {
+
+            jogo.style.display =
+                "none";
+
+            tempoEsgotado.style.display =
+                "flex";
+
+        },
+
+        300
+    );
+
+}
 
 
 /* =========================================
@@ -1325,6 +1765,15 @@ botaoReiniciar.addEventListener(
 );
 
 
+botaoReiniciarTempo.addEventListener(
+    "click",
+    function() {
+
+        location.reload();
+
+    }
+);
+
 
 /* =========================================
    BOTÃO INICIAR
@@ -1335,9 +1784,7 @@ botaoIniciar.addEventListener(
     iniciarJogo
 );
 
-
 </script>
 
 </body>
-
 </html>
