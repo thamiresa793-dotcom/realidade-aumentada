@@ -107,7 +107,8 @@ body {
 }
 
 #botaoIniciar,
-#botaoReiniciar {
+#botaoReiniciar,
+#botaoReiniciarTempo {
 
     border: none;
     border-radius: 14px;
@@ -231,7 +232,7 @@ body {
 }
 
 
-/* movimento visual */
+/* movimento visual da esteira */
 
 #esteira::after {
 
@@ -250,7 +251,7 @@ body {
         );
 
     animation:
-        movimentoEsteira 0.7s linear infinite;
+        movimentoEsteira 1.5s linear infinite;
 }
 
 @keyframes movimentoEsteira {
@@ -330,7 +331,7 @@ body {
 }
 
 
-/* setores espalhados */
+/* posições dos setores */
 
 #recebimento {
     left: 4%;
@@ -390,6 +391,7 @@ body {
         0 7px 14px rgba(0,0,0,0.58);
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
@@ -409,7 +411,7 @@ body {
 }
 
 
-/* fita no meio da caixa */
+/* aparência de papelão */
 
 .caixa::before {
 
@@ -441,10 +443,9 @@ body {
 }
 
 
-/* quando organizada */
+/* caixas organizadas */
 
 .caixa.correta {
-
     display: none;
 }
 
@@ -488,7 +489,8 @@ body {
    TELA FINAL
 ========================= */
 
-#final {
+#final,
+#tempoEsgotado {
 
     position: fixed;
 
@@ -510,10 +512,11 @@ body {
     color: white;
 
     background:
-        rgba(0,0,0,0.93);
+        rgba(0,0,0,0.94);
 }
 
-#final h1 {
+#final h1,
+#tempoEsgotado h1 {
 
     margin: 0 0 18px;
 
@@ -536,42 +539,6 @@ body {
     font-size: 16px;
 
     line-height: 1.7;
-}
-
-
-/* =========================
-   TEMPO ESGOTADO
-========================= */
-
-#tempoEsgotado {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 31;
-
-    display: none;
-
-    flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
-
-    padding: 30px;
-
-    text-align: center;
-
-    color: white;
-
-    background:
-        rgba(0,0,0,0.94);
-}
-
-#tempoEsgotado h1 {
-
-    font-size: 30px;
-    margin-bottom: 12px;
 }
 
 #tempoEsgotado p {
@@ -620,9 +587,7 @@ body {
 <body>
 
 
-<!-- =========================
-     CÂMERA
-========================= -->
+<!-- CÂMERA -->
 
 <video
     id="camera"
@@ -632,9 +597,7 @@ body {
 </video>
 
 
-<!-- =========================
-     TELA INICIAL
-========================= -->
+<!-- TELA INICIAL -->
 
 <div id="inicio">
 
@@ -665,9 +628,7 @@ body {
 </div>
 
 
-<!-- =========================
-     JOGO
-========================= -->
+<!-- JOGO -->
 
 <div id="jogo">
 
@@ -701,10 +662,7 @@ body {
     <div id="esteira"></div>
 
 
-    <!-- =========================
-         SETORES
-    ========================= -->
-
+    <!-- SETORES -->
 
     <div
         class="setor"
@@ -791,9 +749,7 @@ body {
     </div>
 
 
-    <!-- =========================
-         CAIXAS
-    ========================= -->
+    <!-- CAIXAS -->
 
 
     <div
@@ -851,8 +807,6 @@ body {
     </div>
 
 
-    <!-- MENSAGEM -->
-
     <div id="mensagem">
 
         Observe as informações das caixas
@@ -863,9 +817,7 @@ body {
 </div>
 
 
-<!-- =========================
-     FINAL - VITÓRIA
-========================= -->
+<!-- VITÓRIA -->
 
 <div id="final">
 
@@ -899,19 +851,14 @@ body {
 
     <br>
 
-    <button
-        id="botaoReiniciar">
-
+    <button id="botaoReiniciar">
         Jogar novamente
-
     </button>
 
 </div>
 
 
-<!-- =========================
-     TEMPO ESGOTADO
-========================= -->
+<!-- TEMPO ESGOTADO -->
 
 <div id="tempoEsgotado">
 
@@ -942,17 +889,14 @@ body {
 
     </p>
 
-    <button
-        id="botaoReiniciarTempo">
-
+    <button id="botaoReiniciarTempo">
         Tentar novamente
-
     </button>
 
 </div>
 
 
-<!-- ERRO DE CÂMERA -->
+<!-- ERRO -->
 
 <div id="erro">
 
@@ -1029,16 +973,39 @@ const mensagem =
    CONFIGURAÇÕES
 ========================================= */
 
+
+/*
+   Tempo total do desafio.
+*/
+
 const TEMPO_TOTAL = 30;
 
-const VELOCIDADE_ESTEIRA = 0.065;
+
+/*
+   VELOCIDADE DA ESTEIRA
+
+   Agora está bem mais lenta.
+*/
+
+const VELOCIDADE_ESTEIRA = 0.022;
+
+
+/*
+   Distância mínima entre caixas.
+
+   Isso evita que elas fiquem
+   sobrepostas.
+*/
+
+const DISTANCIA_MINIMA = 180;
 
 
 /* =========================================
-   VARIÁVEIS DO JOGO
+   VARIÁVEIS
 ========================================= */
 
-let tempoRestante = TEMPO_TOTAL;
+let tempoRestante =
+    TEMPO_TOTAL;
 
 let caixasCorretas = 0;
 
@@ -1061,13 +1028,6 @@ const caixas =
     );
 
 
-/*
-   Posições das caixas na esteira.
-
-   Cada caixa possui uma posição horizontal
-   independente.
-*/
-
 const dadosCaixas =
     caixas.map(
         function(caixa, indice) {
@@ -1076,16 +1036,15 @@ const dadosCaixas =
 
                 elemento: caixa,
 
-                x:
-                    -150
-                    -
-                    (indice * 230),
+                x: -150,
 
-                y: 0,
+                organizada: false,
 
                 selecionada: false,
 
-                organizada: false
+                esperando: false,
+
+                ordem: indice
 
             };
 
@@ -1094,7 +1053,7 @@ const dadosCaixas =
 
 
 /* =========================================
-   INICIAR JOGO
+   INICIAR
 ========================================= */
 
 async function iniciarJogo() {
@@ -1118,12 +1077,16 @@ async function iniciarJogo() {
             });
 
 
-        camera.srcObject = stream;
+        camera.srcObject =
+            stream;
 
 
-        inicio.style.display = "none";
+        inicio.style.display =
+            "none";
 
-        jogo.style.display = "block";
+
+        jogo.style.display =
+            "block";
 
 
         prepararCaixas();
@@ -1132,14 +1095,19 @@ async function iniciarJogo() {
         tempoRestante =
             TEMPO_TOTAL;
 
+
         caixasCorretas = 0;
 
         quantidadeErros = 0;
 
 
-        contador.innerText = "0";
+        contador.innerText =
+            "0";
 
-        errosElemento.innerText = "0";
+
+        errosElemento.innerText =
+            "0";
+
 
         tempoElemento.innerText =
             tempoRestante;
@@ -1158,7 +1126,8 @@ async function iniciarJogo() {
 
         console.error(error);
 
-        erro.style.display = "block";
+        erro.style.display =
+            "block";
 
     }
 
@@ -1172,34 +1141,67 @@ async function iniciarJogo() {
 function prepararCaixas() {
 
     /*
-       Embaralha as caixas.
+       Embaralha a ordem.
     */
 
-    const dadosEmbaralhados =
+    const ordem =
         [...dadosCaixas]
         .sort(
             () => Math.random() - 0.5
         );
 
 
-    dadosEmbaralhados.forEach(
+    /*
+       Distribui as caixas com bastante
+       espaço entre elas.
+    */
+
+    ordem.forEach(
         function(dado, indice) {
 
             dado.x =
-                -160
+                -150
                 -
-                (indice * 210);
+                indice
+                *
+                DISTANCIA_MINIMA;
 
-            dado.organizada = false;
 
-            dado.selecionada = false;
+            dado.organizada =
+                false;
 
-            dado.elemento.classList.remove(
-                "correta"
-            );
+
+            dado.selecionada =
+                false;
+
+
+            dado.esperando =
+                false;
+
+
+            dado.elemento
+                .classList
+                .remove("correta");
+
 
             dado.elemento.style.display =
                 "flex";
+
+
+            dado.elemento.style.left =
+                dado.x + "px";
+
+
+            dado.elemento.style.top =
+                (
+                    window.innerHeight
+                    *
+                    0.50
+                    -
+                    32
+                )
+                +
+                "px";
 
         }
     );
@@ -1213,7 +1215,9 @@ function prepararCaixas() {
 
 function iniciarCronometro() {
 
-    clearInterval(intervaloTempo);
+    clearInterval(
+        intervaloTempo
+    );
 
 
     intervaloTempo =
@@ -1233,7 +1237,9 @@ function iniciarCronometro() {
                     tempoRestante;
 
 
-                if (tempoRestante <= 0) {
+                if (
+                    tempoRestante <= 0
+                ) {
 
                     terminarPorTempo();
 
@@ -1269,15 +1275,40 @@ function iniciarEsteira() {
             window.innerWidth;
 
 
-        const esteiraTop =
-            window.innerHeight * 0.50;
+        const posicaoEsteira =
+            window.innerHeight
+            *
+            0.50
+            -
+            32;
 
 
-        dadosCaixas.forEach(
-            function(dado) {
+        /*
+           Ordena as caixas pela posição.
+        */
+
+        const caixasAtivas =
+            dadosCaixas
+            .filter(
+                function(dado) {
+
+                    return !dado.organizada;
+
+                }
+            )
+            .sort(
+                function(a, b) {
+
+                    return a.x - b.x;
+
+                }
+            );
+
+
+        caixasAtivas.forEach(
+            function(dado, indice) {
 
                 if (
-                    dado.organizada ||
                     dado.selecionada
                 ) {
                     return;
@@ -1285,7 +1316,7 @@ function iniciarEsteira() {
 
 
                 /*
-                   Move a caixa.
+                   Move lentamente.
                 */
 
                 dado.x +=
@@ -1295,17 +1326,64 @@ function iniciarEsteira() {
 
 
                 /*
-                   Se saiu completamente
-                   pela direita, volta
-                   para o começo.
+                   Se chegar ao final,
+                   volta para o começo.
                 */
 
                 if (
                     dado.x >
-                    larguraTela + 30
+                    larguraTela + 20
                 ) {
 
-                    dado.x = -150;
+                    /*
+                       Coloca atrás da última
+                       caixa da fila.
+                    */
+
+                    let menorX =
+                        0;
+
+
+                    const outras =
+                        dadosCaixas.filter(
+                            function(item) {
+
+                                return (
+                                    item !== dado
+                                    &&
+                                    !item.organizada
+                                    &&
+                                    !item.selecionada
+                                );
+
+                            }
+                        );
+
+
+                    if (
+                        outras.length > 0
+                    ) {
+
+                        menorX =
+                            Math.min(
+                                ...outras.map(
+                                    function(item) {
+                                        return item.x;
+                                    }
+                                )
+                            );
+
+                    }
+
+
+                    dado.x =
+                        menorX
+                        -
+                        DISTANCIA_MINIMA;
+
+
+                    dado.esperando =
+                        true;
 
                 }
 
@@ -1315,11 +1393,7 @@ function iniciarEsteira() {
 
 
                 dado.elemento.style.top =
-                    (
-                        esteiraTop - 32
-                    )
-                    +
-                    "px";
+                    posicaoEsteira + "px";
 
             }
         );
@@ -1339,8 +1413,15 @@ function iniciarEsteira() {
 
 
 /* =========================================
-   ARRASTAR CAIXA
+   ARRASTAR
 ========================================= */
+
+let caixaArrastada = null;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
 
 caixas.forEach(
     function(caixa) {
@@ -1352,13 +1433,6 @@ caixas.forEach(
 
     }
 );
-
-
-let caixaArrastada = null;
-
-let offsetX = 0;
-
-let offsetY = 0;
 
 
 function iniciarArraste(evento) {
@@ -1382,7 +1456,11 @@ function iniciarArraste(evento) {
         );
 
 
-    if (!dado || dado.organizada) {
+    if (
+        !dado
+        ||
+        dado.organizada
+    ) {
         return;
     }
 
@@ -1391,7 +1469,8 @@ function iniciarArraste(evento) {
         dado;
 
 
-    dado.selecionada = true;
+    dado.selecionada =
+        true;
 
 
     const rect =
@@ -1399,11 +1478,15 @@ function iniciarArraste(evento) {
 
 
     offsetX =
-        evento.clientX - rect.left;
+        evento.clientX
+        -
+        rect.left;
 
 
     offsetY =
-        evento.clientY - rect.top;
+        evento.clientY
+        -
+        rect.top;
 
 
     caixa.setPointerCapture(
@@ -1424,13 +1507,13 @@ function iniciarArraste(evento) {
 
 
     mensagem.innerText =
-        "Leve esta caixa até o setor que você considera correto.";
+        "Leve a caixa até o setor que você considera correto.";
 
 }
 
 
 /* =========================================
-   MOVER CAIXA
+   MOVER
 ========================================= */
 
 function moverCaixa(evento) {
@@ -1455,10 +1538,6 @@ function moverCaixa(evento) {
         -
         offsetY;
 
-
-    /*
-       Mantém a caixa dentro da tela.
-    */
 
     x =
         Math.max(
@@ -1497,7 +1576,7 @@ function moverCaixa(evento) {
 
 
 /* =========================================
-   SOLTAR CAIXA
+   SOLTAR
 ========================================= */
 
 function soltarCaixa(evento) {
@@ -1527,10 +1606,13 @@ function soltarCaixa(evento) {
     );
 
 
-    verificarDestino(dado);
+    verificarDestino(
+        dado
+    );
 
 
-    caixaArrastada = null;
+    caixaArrastada =
+        null;
 
 }
 
@@ -1586,15 +1668,21 @@ function verificarDestino(dado) {
         centroY <= setorRect.bottom;
 
 
-    if (dentroDoSetor) {
+    if (
+        dentroDoSetor
+    ) {
 
         /*
            ACERTO
         */
 
-        dado.organizada = true;
+        dado.organizada =
+            true;
 
-        dado.selecionada = false;
+
+        dado.selecionada =
+            false;
+
 
         caixa.classList.add(
             "correta"
@@ -1612,7 +1700,9 @@ function verificarDestino(dado) {
             "✅ Boa decisão! A caixa foi encaminhada corretamente.";
 
 
-        if (caixasCorretas === 5) {
+        if (
+            caixasCorretas === 5
+        ) {
 
             finalizarVitoria();
 
@@ -1638,13 +1728,53 @@ function verificarDestino(dado) {
 
 
         /*
-           Retorna a caixa para o início
-           da esteira.
+           Retorna para trás da fila.
         */
 
-        dado.x = -150;
+        const outras =
+            dadosCaixas.filter(
+                function(item) {
 
-        dado.selecionada = false;
+                    return (
+                        item !== dado
+                        &&
+                        !item.organizada
+                        &&
+                        !item.selecionada
+                    );
+
+                }
+            );
+
+
+        let menorX =
+            0;
+
+
+        if (
+            outras.length > 0
+        ) {
+
+            menorX =
+                Math.min(
+                    ...outras.map(
+                        function(item) {
+                            return item.x;
+                        }
+                    )
+                );
+
+        }
+
+
+        dado.x =
+            menorX
+            -
+            DISTANCIA_MINIMA;
+
+
+        dado.selecionada =
+            false;
 
 
         caixa.style.left =
@@ -1653,7 +1783,9 @@ function verificarDestino(dado) {
 
         caixa.style.top =
             (
-                window.innerHeight * 0.50
+                window.innerHeight
+                *
+                0.50
                 -
                 32
             )
@@ -1671,7 +1803,8 @@ function verificarDestino(dado) {
 
 function finalizarVitoria() {
 
-    jogoAtivo = false;
+    jogoAtivo =
+        false;
 
 
     clearInterval(
@@ -1685,7 +1818,9 @@ function finalizarVitoria() {
 
 
     tempoFinal.innerText =
-        TEMPO_TOTAL - tempoRestante;
+        TEMPO_TOTAL
+        -
+        tempoRestante;
 
 
     errosFinal.innerText =
@@ -1693,11 +1828,11 @@ function finalizarVitoria() {
 
 
     setTimeout(
-
         function() {
 
             jogo.style.display =
                 "none";
+
 
             final.style.display =
                 "flex";
@@ -1716,7 +1851,8 @@ function finalizarVitoria() {
 
 function terminarPorTempo() {
 
-    jogoAtivo = false;
+    jogoAtivo =
+        false;
 
 
     clearInterval(
@@ -1734,11 +1870,11 @@ function terminarPorTempo() {
 
 
     setTimeout(
-
         function() {
 
             jogo.style.display =
                 "none";
+
 
             tempoEsgotado.style.display =
                 "flex";
@@ -1776,7 +1912,7 @@ botaoReiniciarTempo.addEventListener(
 
 
 /* =========================================
-   BOTÃO INICIAR
+   INICIAR
 ========================================= */
 
 botaoIniciar.addEventListener(
