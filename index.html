@@ -1,3353 +1,1781 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
-
-<title>Fábrica na Palma da Mão</title>
-
-
-<style>
-
-/* =====================================================
-   CONFIGURAÇÕES GERAIS
-===================================================== */
-
-* {
-    box-sizing: border-box;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-html,
-body {
-
-    margin: 0;
-    padding: 0;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background: #111;
-}
-
-
-/* =====================================================
-   CÂMERA
-===================================================== */
-
-#camera {
-
-    position: fixed;
-
-    inset: 0;
-
-    width: 100vw;
-    height: 100vh;
-
-    object-fit: cover;
-
-    z-index: 1;
-}
-
-
-/* =====================================================
-   JOGO
-===================================================== */
-
-#jogo {
-
-    position: fixed;
-
-    inset: 0;
-
-    display: none;
-
-    z-index: 2;
-
-    overflow: hidden;
-
-    touch-action: none;
-}
-
-
-/* =====================================================
-   TELA INICIAL
-===================================================== */
-
-#inicio {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 20;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 25px;
-
-    text-align: center;
-
-    color: #111;
-
-    background: #fff;
-
-    overflow-y: auto;
-}
-
-#inicio h1 {
-
-    margin: 0 0 8px;
-
-    font-size: 30px;
-}
-
-#inicio h2 {
-
-    margin: 0 0 20px;
-
-    font-size: 17px;
-
-    font-weight: normal;
-}
-
-#inicio p {
-
-    max-width: 380px;
-
-    margin: 0 0 25px;
-
-    font-size: 15px;
-
-    line-height: 1.5;
-}
-
-.atencao {
-
-    color: #7d3044;
-
-    font-weight: bold;
-}
-
-
-/* =====================================================
-   BOTÕES
-===================================================== */
-
-#botaoIniciar,
-#botaoReiniciar,
-#botaoReiniciarTempo,
-#botaoReiniciarErros {
-
-    border: none;
-
-    border-radius: 14px;
-
-    padding: 15px 28px;
-
-    background: #7d3044;
-
-    color: white;
-
-    font-size: 17px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    text-transform: uppercase;
-
-    box-shadow:
-        0 5px 12px rgba(0,0,0,0.25);
-}
-
-#botaoIniciar:active,
-#botaoReiniciar:active,
-#botaoReiniciarTempo:active,
-#botaoReiniciarErros:active {
-
-    transform: scale(0.96);
-}
-
-
-/* =====================================================
-   PAINEL
-===================================================== */
-
-#painel {
-
-    position: absolute;
-
-    top: 15px;
-
-    left: 10px;
-    right: 10px;
-
-    z-index: 15;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 5px;
-}
-
-.info {
-
-    padding: 8px 9px;
-
-    border-radius: 11px;
-
-    background:
-        rgba(0,0,0,0.78);
-
-    color: white;
-
-    font-size: 11px;
-
-    font-weight: bold;
-
-    backdrop-filter: blur(5px);
-
-    white-space: nowrap;
-}
-
-
-/* =====================================================
-   TÍTULO DO JOGO
-===================================================== */
-
-#tituloJogo {
-
-    position: absolute;
-
-    top: 57px;
-
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    z-index: 15;
-
-    width: max-content;
-
-    max-width: 92%;
-
-    padding: 8px 13px;
-
-    border-radius: 18px;
-
-    background:
-        rgba(0,0,0,0.68);
-
-    color: white;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-    text-align: center;
-}
-
-
-/* =====================================================
-   ESTEIRA
-===================================================== */
-
-#esteira {
-
-    position: absolute;
-
-    left: -5%;
-
-    width: 110%;
-
-    top: 50%;
-
-    height: 100px;
-
-    transform:
-        translateY(-50%);
-
-    background:
-
-        repeating-linear-gradient(
-
-            90deg,
-
-            #343434 0px,
-            #343434 35px,
-
-            #484848 35px,
-            #484848 70px
-        );
-
-    border-top:
-        6px solid #1b1b1b;
-
-    border-bottom:
-        6px solid #1b1b1b;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,0.65);
-
-    overflow: hidden;
-}
-
-#esteira::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-
-        repeating-linear-gradient(
-
-            90deg,
-
-            transparent 0px,
-            transparent 27px,
-
-            rgba(255,255,255,0.12) 27px,
-            rgba(255,255,255,0.12) 31px
-        );
-
-    animation:
-        movimentoEsteira 1.5s linear infinite;
-}
-
-@keyframes movimentoEsteira {
-
-    from {
-        transform:
-            translateX(0);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fábrica na Palma da Mão</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    to {
-        transform:
-            translateX(-56px);
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: white;
     }
-}
 
-
-/* =====================================================
-   SETORES
-===================================================== */
-
-.setor {
-
-    position: absolute;
-
-    z-index: 8;
-
-    width: 28%;
-
-    height: 70px;
-
-    border-radius: 13px;
-
-    background:
-        rgba(0,0,0,0.72);
-
-    border:
-        2px dashed rgba(255,255,255,0.7);
-
-    color: white;
-
-    text-align: center;
-
-    transition:
-
-        transform 0.2s,
-
-        background 0.2s;
-}
-
-
-/* -----------------------------------------------------
-   NOME DOS SETORES
-
-   Fica acima da área de encaixe.
------------------------------------------------------ */
-
-.nomeSetor {
-
-    position: absolute;
-
-    top: -30px;
-
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    background:
-        rgba(0,0,0,0.88);
-
-    color: white;
-
-    padding:
-        5px 9px;
-
-    border-radius: 10px;
-
-    font-size: 10px;
-
-    font-weight: bold;
-
-    white-space: nowrap;
-
-    border:
-        1px solid rgba(255,255,255,0.45);
-
-    box-shadow:
-        0 3px 8px rgba(0,0,0,0.35);
-}
-
-
-/* -----------------------------------------------------
-   ÍCONE DO SETOR
-
-   Continua dentro da área para facilitar
-   identificação visual.
------------------------------------------------------ */
-
-.iconeSetor {
-
-    display: block;
-
-    margin-top: 8px;
-
-    font-size: 24px;
-}
-
-
-/* -----------------------------------------------------
-   POSIÇÃO DOS SETORES
------------------------------------------------------ */
-
-#recebimento {
-
-    left: 4%;
-
-    top: 18%;
-}
-
-#montagem {
-
-    right: 4%;
-
-    top: 18%;
-}
-
-#inspecao {
-
-    left: 5%;
-
-    bottom: 9%;
-}
-
-#separacao {
-
-    right: 5%;
-
-    bottom: 9%;
-}
-
-#expedicao {
-
-    left: 36%;
-
-    bottom: 7%;
-}
-
-
-/* =====================================================
-   CAIXAS
-===================================================== */
-
-.caixa {
-
-    position: absolute;
-
-    z-index: 12;
-
-    width: 128px;
-
-    min-height: 65px;
-
-    padding: 9px;
-
-    border-radius: 7px;
-
-    background:
-
-        linear-gradient(
-
-            145deg,
-
-            #c9a06f,
-
-            #a97847
+    body {
+      touch-action: none;
+    }
+
+    /* =========================
+       CÂMERA
+    ========================= */
+
+    #camera {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      background: #111;
+    }
+
+    /* =========================
+       JOGO
+    ========================= */
+
+    #jogo {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* =========================
+       TELAS
+    ========================= */
+
+    .tela {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 25px;
+      background: white;
+      color: #000;
+    }
+
+    #inicio {
+      z-index: 20;
+    }
+
+    #vitoria,
+    #gameOver,
+    #tempoEsgotado {
+      display: none;
+      z-index: 30;
+    }
+
+    .titulo-principal {
+      margin: 0 0 20px;
+      font-size: clamp(2rem, 9vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: #7d3044;
+      text-transform: uppercase;
+    }
+
+    .subtitulo {
+      max-width: 700px;
+      margin: 0 0 25px;
+      font-size: clamp(1rem, 4vw, 1.35rem);
+      line-height: 1.5;
+      color: #111;
+    }
+
+    .regras {
+      max-width: 720px;
+      margin-bottom: 25px;
+      text-align: left;
+      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+      line-height: 1.55;
+      color: #111;
+    }
+
+    .botao {
+      border: none;
+      border-radius: 8px;
+      background: #7d3044;
+      color: white;
+      padding: 15px 28px;
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      font-weight: 900;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .botao:active {
+      transform: scale(0.96);
+    }
+
+    .titulo-final {
+      margin: 0 0 20px;
+      font-size: clamp(2rem, 9vw, 4rem);
+      line-height: 1.05;
+      font-weight: 900;
+      color: #7d3044;
+      text-transform: uppercase;
+    }
+
+    .mensagem-final {
+      max-width: 700px;
+      margin-bottom: 20px;
+      font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .resultado {
+      margin-bottom: 25px;
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      line-height: 1.8;
+      font-weight: 700;
+    }
+
+    /* =========================
+       HUD
+    ========================= */
+
+    #hud {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
+      max-width: 700px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    .hud-item {
+      min-width: 70px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #111;
+      font-weight: 900;
+      font-size: clamp(0.75rem, 3.2vw, 1rem);
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #hudPontuacao {
+      color: #b8860b;
+    }
+
+    /* =========================
+       ESTEIRA
+    ========================= */
+
+    #esteira {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      top: 48%;
+      height: 100px;
+      transform: translateY(-50%);
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #303030 0px,
+          #303030 35px,
+          #4b4b4b 35px,
+          #4b4b4b 55px
         );
-
-    border:
-        3px solid #704522;
-
-    color: #24170e;
-
-    box-shadow:
-        0 7px 14px rgba(0,0,0,0.58);
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-    font-size: 10px;
-
-    font-weight: bold;
-
-    line-height: 1.25;
-
-    cursor: grab;
-
-    touch-action: none;
-
-    transition:
-
-        box-shadow 0.15s,
-
-        transform 0.15s;
-}
-
-.caixa::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    bottom: 0;
-
-    left: 50%;
-
-    width: 2px;
-
-    background:
-        rgba(80,45,20,0.24);
-
-    transform:
-        translateX(-50%);
-}
-
-.caixa:active {
-
-    cursor: grabbing;
-
-    transform:
-        scale(1.06);
-
-    box-shadow:
-        0 12px 24px rgba(0,0,0,0.7);
-}
-
-.caixa.correta {
-
-    display: none;
-}
-
-
-/* =====================================================
-   PROBLEMAS CAINDO
-===================================================== */
-
-#problemas {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 13;
-
-    pointer-events: none;
-
-    overflow: hidden;
-}
-
-.problema {
-
-    position: absolute;
-
-    top: -70px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    width: 55px;
-    height: 55px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,0.95);
-
-    border:
-        3px solid #7d3044;
-
-    box-shadow:
-        0 5px 15px rgba(0,0,0,0.45);
-
-    font-size: 30px;
-
-    cursor: pointer;
-
-    pointer-events: auto;
-
-    z-index: 14;
-}
-
-.problema::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: -5px;
-
-    border-radius: 50%;
-
-    border:
-        2px solid rgba(125,48,68,0.35);
-}
-
-
-/* =====================================================
-   EFEITO AO ELIMINAR PROBLEMA
-===================================================== */
-
-.problema.eliminado {
-
-    animation:
-        eliminarProblema 0.35s forwards;
-}
-
-@keyframes eliminarProblema {
-
-    0% {
-
-        transform:
-            scale(1);
-
+      border-top: 8px solid #222;
+      border-bottom: 8px solid #222;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+    }
+
+    #esteira::before,
+    #esteira::after {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 12px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #222 0 12px, #777 13px 20px, #222 21px 28px, #777 29px 30px);
+    }
+
+    #esteira::before {
+      left: 3%;
+    }
+
+    #esteira::after {
+      right: 3%;
+    }
+
+    /* =========================
+       SETORES
+    ========================= */
+
+    .setor {
+      position: absolute;
+      width: 29%;
+      height: 105px;
+      border: 3px dashed rgba(0, 0, 0, 0.65);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.28);
+      z-index: 8;
+      transition: 0.15s ease;
+    }
+
+    .setor::after {
+      content: "⬇";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .setor.destaque {
+      transform: scale(1.03);
+      border-color: #7d3044;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .setorNome {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(100% + 7px);
+      text-align: center;
+      color: #111;
+      font-size: clamp(0.65rem, 3vw, 0.95rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      text-shadow:
+        0 1px 2px white,
+        1px 0 2px white,
+        -1px 0 2px white;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    #recebimento {
+      left: 4%;
+      top: 21%;
+    }
+
+    #montagem {
+      right: 4%;
+      top: 21%;
+    }
+
+    #inspecao {
+      left: 4%;
+      top: 70%;
+    }
+
+    #separacao {
+      right: 4%;
+      top: 70%;
+    }
+
+    #expedicao {
+      left: 50%;
+      bottom: 4%;
+      transform: translateX(-50%);
+    }
+
+    #expedicao.destaque {
+      transform: translateX(-50%) scale(1.03);
+    }
+
+    /* =========================
+       CAIXAS
+    ========================= */
+
+    .caixa {
+      position: absolute;
+      width: 125px;
+      min-height: 75px;
+      padding: 9px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      background: #c99052;
+      color: #111;
+      border: 3px solid #70451f;
+      border-radius: 8px;
+
+      font-size: 12px;
+      line-height: 1.15;
+      font-weight: 900;
+
+      z-index: 20;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.15),
+        0 5px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .caixa::before {
+      content: "📦";
+      position: absolute;
+      top: -13px;
+      left: -8px;
+      font-size: 22px;
+    }
+
+    .caixa:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+    }
+
+    .caixa.arrastando {
+      z-index: 50;
+      transform: scale(1.08);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .caixa.correta {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.7);
+      transition: 0.3s ease;
+    }
+
+    /* =========================
+       PROBLEMAS CAINDO
+    ========================= */
+
+    .problema-caindo {
+      position: absolute;
+      top: -70px;
+      width: 52px;
+      height: 52px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 38px;
+      line-height: 1;
+
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+
+      z-index: 14;
+
+      filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.35));
+
+      animation: flutuarProblema 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes flutuarProblema {
+      from {
+        transform: rotate(-6deg) scale(1);
+      }
+
+      to {
+        transform: rotate(6deg) scale(1.08);
+      }
+    }
+
+    .problema-eliminado {
+      animation: eliminarProblema 0.35s ease forwards !important;
+      pointer-events: none;
+    }
+
+    @keyframes eliminarProblema {
+      0% {
+        transform: scale(1);
         opacity: 1;
-    }
+      }
 
-    50% {
-
-        transform:
-            scale(1.5)
-            rotate(15deg);
-
+      50% {
+        transform: scale(1.6) rotate(20deg);
         opacity: 0.8;
-    }
+      }
 
-    100% {
-
-        transform:
-            scale(0);
-
+      100% {
+        transform: scale(0);
         opacity: 0;
+      }
     }
-}
 
+    /* =========================
+       RECOMPENSA
+    ========================= */
 
-/* =====================================================
-   RECOMPENSA / PONTOS
-===================================================== */
+    .recompensa {
+      position: absolute;
+      z-index: 60;
 
-.pontos-flutuantes {
+      color: #ffd700;
+      font-size: 23px;
+      font-weight: 900;
+      text-shadow:
+        0 2px 3px rgba(0, 0, 0, 0.75),
+        0 0 5px rgba(255, 215, 0, 0.7);
 
-    position: fixed;
+      pointer-events: none;
+      white-space: nowrap;
 
-    z-index: 100;
+      animation: subirRecompensa 0.75s ease-out forwards;
+    }
 
-    color: #FFD700;
-
-    font-size: 20px;
-
-    font-weight: 900;
-
-    text-shadow:
-
-        0 0 5px rgba(0,0,0,0.9),
-
-        0 0 10px rgba(255,215,0,0.9),
-
-        0 0 18px rgba(255,215,0,0.65);
-
-    pointer-events: none;
-
-    white-space: nowrap;
-
-    animation:
-        subirPontos 0.9s forwards;
-}
-
-@keyframes subirPontos {
-
-    0% {
-
-        transform:
-            translateY(0)
-            scale(0.8);
-
+    @keyframes subirRecompensa {
+      0% {
         opacity: 0;
-    }
+        transform: translate(-50%, 10px) scale(0.7);
+      }
 
-    20% {
-
-        transform:
-            translateY(-5px)
-            scale(1.15);
-
+      20% {
         opacity: 1;
-    }
+        transform: translate(-50%, 0) scale(1.15);
+      }
 
-    100% {
-
-        transform:
-            translateY(-55px)
-            scale(1);
-
+      100% {
         opacity: 0;
+        transform: translate(-50%, -65px) scale(1);
+      }
     }
-}
 
+    .penalidade {
+      position: absolute;
+      z-index: 60;
 
-/* =====================================================
-   TELAS FINAIS
-===================================================== */
+      color: #d00000;
+      font-size: 20px;
+      font-weight: 900;
+      text-shadow:
+        0 2px 3px white;
 
-#final,
-#tempoEsgotado,
-#gameOver {
+      pointer-events: none;
 
-    position: fixed;
+      animation: subirPenalidade 0.7s ease-out forwards;
+    }
 
-    inset: 0;
+    @keyframes subirPenalidade {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 0);
+      }
 
-    z-index: 30;
+      20% {
+        opacity: 1;
+      }
 
-    display: none;
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50px);
+      }
+    }
 
-    flex-direction: column;
+    .bonus-tempo {
+      position: absolute;
+      left: 50%;
+      top: 90px;
+      transform: translateX(-50%);
 
-    justify-content: center;
+      z-index: 70;
 
-    align-items: center;
+      color: #ffd700;
+      font-size: 20px;
+      font-weight: 900;
 
-    padding: 30px;
+      text-shadow:
+        0 2px 3px rgba(0, 0, 0, 0.8);
 
-    text-align: center;
+      pointer-events: none;
 
-    color: #111;
+      animation: bonusTempo 1.2s ease-out forwards;
+    }
 
-    background: #fff;
-}
+    @keyframes bonusTempo {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.8);
+      }
 
-#final h1,
-#tempoEsgotado h1,
-#gameOver h1 {
+      20% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1.1);
+      }
 
-    margin:
-        0 0 18px;
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -30px) scale(1);
+      }
+    }
 
-    font-size: 29px;
-}
+    /* =========================
+       RESPONSIVIDADE
+    ========================= */
 
-#final h1 {
+    @media (max-width: 500px) {
+      #hud {
+        gap: 4px;
+      }
 
-    font-size: 28px;
+      .hud-item {
+        min-width: 64px;
+        padding: 7px 5px;
+      }
 
-    font-weight: 900;
-}
+      .setor {
+        height: 92px;
+      }
 
-.tituloGameOver {
+      .caixa {
+        width: 118px;
+        min-height: 70px;
+        font-size: 11px;
+      }
 
-    font-size: 38px !important;
+      #esteira {
+        height: 90px;
+      }
 
-    font-weight: bold;
-}
+      .problema-caindo {
+        font-size: 34px;
+      }
+    }
 
-#mensagemFinal {
+    @media (max-height: 700px) {
+      #recebimento,
+      #montagem {
+        top: 25%;
+      }
 
-    max-width: 370px;
+      #inspecao,
+      #separacao {
+        top: 68%;
+      }
 
-    font-size: 18px;
+      #expedicao {
+        bottom: 2%;
+      }
 
-    line-height: 1.5;
-}
-
-.engenheiro {
-
-    display: block;
-
-    margin-top: 20px;
-
-    font-size: 27px;
-
-    font-weight: 900;
-
-    color: #111;
-}
-
-#resultado {
-
-    margin-top: 18px;
-
-    font-size: 16px;
-
-    line-height: 1.7;
-}
-
-#tempoEsgotado p,
-#gameOver p {
-
-    max-width: 350px;
-
-    font-size: 17px;
-
-    line-height: 1.5;
-}
-
-
-/* =====================================================
-   ERRO DA CÂMERA
-===================================================== */
-
-#erro {
-
-    position: fixed;
-
-    left: 20px;
-    right: 20px;
-
-    bottom: 25px;
-
-    z-index: 50;
-
-    display: none;
-
-    padding: 15px;
-
-    border-radius: 12px;
-
-    background:
-        rgba(160,0,0,0.93);
-
-    color: white;
-
-    text-align: center;
-
-    font-size: 14px;
-}
-
-</style>
-
+      .setor {
+        height: 82px;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
+  <!-- CÂMERA -->
+  <video id="camera" autoplay playsinline muted></video>
 
-<!-- =====================================================
-     CÂMERA
-===================================================== -->
+  <!-- JOGO -->
+  <div id="jogo">
 
-<video
-    id="camera"
-    autoplay
-    playsinline
-    muted>
-</video>
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-item">
+        📦 <span id="contadorCaixas">0/10</span>
+      </div>
 
+      <div class="hud-item">
+        ❌ <span id="contadorErros">0</span>
+      </div>
 
-<!-- =====================================================
-     TELA INICIAL
-===================================================== -->
+      <div class="hud-item" id="hudPontuacao">
+        ⭐ <span id="contadorPontos">0</span>
+      </div>
 
-<div id="inicio">
-
-    <h1>
-        🏭 FÁBRICA NA PALMA DA MÃO
-    </h1>
-
-    <h2>
-        Uma missão de Engenharia de Produção
-    </h2>
-
-    <p>
-
-        A fábrica está com problemas de
-        organização e separação de materiais.
-
-        <br><br>
-
-        Sua missão é ajudar a manter
-        a produção funcionando!
-
-        <br><br>
-
-        📦 Arraste cada caixa para
-        o setor correto.
-
-        <br><br>
-
-        🔧 Problemas vão cair pela tela:
-        toque neles para eliminá-los
-        e ganhar pontos.
-
-        <br><br>
-
-        Se deixar passar, você perde
-        os pontos daquele problema.
-
-        <br><br>
-
-        ⏱️ Você começa com
-        <strong>1 minuto</strong>.
-
-        A cada 30 pontos,
-        ganha <strong>+5 segundos</strong>,
-        podendo chegar a no máximo
-        <strong>1 minuto e 30 segundos</strong>.
-
-        <br><br>
-
-        <span class="atencao">
-            ⚠️ ATENÇÃO:
-        </span>
-
-        5 erros ao colocar as caixas
-        no setor errado encerram a produção.
-
-        <br><br>
-
-        Será que você consegue
-        manter a fábrica funcionando?
-
-    </p>
-
-    <button id="botaoIniciar">
-
-        INICIAR DESAFIO
-
-    </button>
-
-</div>
-
-
-<!-- =====================================================
-     JOGO
-===================================================== -->
-
-<div id="jogo">
-
-
-    <!-- =================================================
-         PAINEL
-    ================================================= -->
-
-    <div id="painel">
-
-        <div class="info">
-
-            📦
-
-            <span id="contador">
-                0
-            </span>/10
-
-        </div>
-
-
-        <div class="info">
-
-            ❌
-
-            <span id="erros">
-                0
-            </span>
-
-        </div>
-
-
-        <div class="info">
-
-            ⭐
-
-            <span id="pontuacao">
-                0
-            </span>
-
-        </div>
-
-
-        <div class="info">
-
-            ⏱️
-
-            <span id="tempo">
-                60
-            </span>s
-
-        </div>
-
+      <div class="hud-item">
+        ⏱️ <span id="contadorTempo">60s</span>
+      </div>
     </div>
 
-
-    <!-- =================================================
-         TÍTULO
-    ================================================= -->
-
-    <div id="tituloJogo">
-
-        ORGANIZE O FLUXO DA FÁBRICA
-
-    </div>
-
-
-    <!-- =================================================
-         ESTEIRA
-    ================================================= -->
-
+    <!-- ESTEIRA -->
     <div id="esteira"></div>
 
-
-    <!-- =================================================
-         SETORES
-    ================================================= -->
-
-    <div
-        class="setor"
-        id="recebimento">
-
-        <div class="nomeSetor">
-
-            📥 RECEBIMENTO
-
-        </div>
-
-        <span class="iconeSetor">
-
-            📥
-
-        </span>
-
+    <!-- SETORES -->
+    <div class="setor" id="recebimento">
+      <div class="setorNome">📥 RECEBIMENTO</div>
     </div>
 
-
-    <div
-        class="setor"
-        id="montagem">
-
-        <div class="nomeSetor">
-
-            ⚙️ MONTAGEM
-
-        </div>
-
-        <span class="iconeSetor">
-
-            ⚙️
-
-        </span>
-
+    <div class="setor" id="montagem">
+      <div class="setorNome">🔧 MONTAGEM</div>
     </div>
 
-
-    <div
-        class="setor"
-        id="inspecao">
-
-        <div class="nomeSetor">
-
-            🔍 INSPEÇÃO
-
-        </div>
-
-        <span class="iconeSetor">
-
-            🔍
-
-        </span>
-
+    <div class="setor" id="inspecao">
+      <div class="setorNome">🔍 INSPEÇÃO</div>
     </div>
 
-
-    <div
-        class="setor"
-        id="separacao">
-
-        <div class="nomeSetor">
-
-            🔀 SEPARAÇÃO
-
-        </div>
-
-        <span class="iconeSetor">
-
-            🔀
-
-        </span>
-
+    <div class="setor" id="separacao">
+      <div class="setorNome">📋 SEPARAÇÃO</div>
     </div>
 
-
-    <div
-        class="setor"
-        id="expedicao">
-
-        <div class="nomeSetor">
-
-            📤 EXPEDIÇÃO
-
-        </div>
-
-        <span class="iconeSetor">
-
-            📤
-
-        </span>
-
+    <div class="setor" id="expedicao">
+      <div class="setorNome">🚚 EXPEDIÇÃO</div>
     </div>
 
+  </div>
 
-    <!-- =================================================
-         10 CAIXAS
-         2 PARA CADA SETOR
-    ================================================= -->
+  <!-- =========================
+       TELA INICIAL
+  ========================= -->
 
+  <div id="inicio" class="tela">
 
-    <!-- RECEBIMENTO -->
-
-    <div
-        class="caixa"
-        id="caixa1"
-        data-setor="recebimento">
-
-        Lote 08 —
-        recebimento
-        de fornecedor
-
-    </div>
-
-
-    <div
-        class="caixa"
-        id="caixa2"
-        data-setor="recebimento">
-
-        Lote 12 —
-        matéria-prima
-        recebida
-
-    </div>
-
-
-    <!-- MONTAGEM -->
-
-    <div
-        class="caixa"
-        id="caixa3"
-        data-setor="montagem">
-
-        Kit de componentes
-        para fabricação
-
-    </div>
-
-
-    <div
-        class="caixa"
-        id="caixa4"
-        data-setor="montagem">
-
-        Conjunto de peças
-        para montagem
-
-    </div>
-
-
-    <!-- INSPEÇÃO -->
-
-    <div
-        class="caixa"
-        id="caixa5"
-        data-setor="inspecao">
-
-        Amostra 23 —
-        verificar
-        dimensões
-
-    </div>
-
-
-    <div
-        class="caixa"
-        id="caixa6"
-        data-setor="inspecao">
-
-        Lote 31 —
-        controle
-        de qualidade
-
-    </div>
-
-
-    <!-- SEPARAÇÃO -->
-
-    <div
-        class="caixa"
-        id="caixa7"
-        data-setor="separacao">
-
-        Kit 04 —
-        componentes
-        A, B e C
-
-    </div>
-
-
-    <div
-        class="caixa"
-        id="caixa8"
-        data-setor="separacao">
-
-        Kit 07 —
-        peças para
-        montagem
-
-    </div>
-
-
-    <!-- EXPEDIÇÃO -->
-
-    <div
-        class="caixa"
-        id="caixa9"
-        data-setor="expedicao">
-
-        Pedido 482 —
-        produto
-        finalizado
-
-    </div>
-
-
-    <div
-        class="caixa"
-        id="caixa10"
-        data-setor="expedicao">
-
-        Pedido 517 —
-        produto pronto
-        para envio
-
-    </div>
-
-
-    <!-- =================================================
-         PROBLEMAS
-    ================================================= -->
-
-    <div id="problemas"></div>
-
-</div>
-
-
-<!-- =====================================================
-     VITÓRIA
-===================================================== -->
-
-<div id="final">
-
-    <h1>
-
-        🎉🏆 DESAFIO CONCLUÍDO 🏆🎉
-
+    <h1 class="titulo-principal">
+      FÁBRICA NA PALMA DA MÃO
     </h1>
 
+    <div class="subtitulo">
+      Desafio interativo de Engenharia de Produção
+    </div>
 
-    <div id="mensagemFinal">
+    <div class="regras">
 
-        <span class="engenheiro">
+      <strong>
+        A fábrica está com problemas de organização e separação de materiais.
+        Sua missão é ajudar a manter a produção funcionando!
+      </strong>
 
-            👷‍♀️ Você é um excelente
-            <br>
-            Engenheiro de Produção!
+      <br><br>
 
-        </span>
+      📦 Arraste cada caixa para o setor correto.
+
+      <br>
+
+      🔧 Problemas vão cair pela tela: toque neles para eliminá-los e ganhar pontos.
+      Se deixar passar, você perde os pontos daquele problema.
+
+      <br>
+
+      ⏱️ Você começa com 1 minuto. A cada 30 pontos, ganha +5 segundos,
+      podendo chegar a no máximo 1 minuto e 30 segundos.
+
+      <br>
+
+      ⚠️ Cuidado com suas decisões: 5 erros ao colocar as caixas no setor errado
+      encerram a produção.
+
+      <br><br>
+
+      Será que você consegue manter a fábrica funcionando?
 
     </div>
 
+    <button class="botao" id="btnIniciar">
+      [ INICIAR DESAFIO ]
+    </button>
 
-    <div id="resultado">
+  </div>
 
-        ⏱️ Tempo utilizado:
+  <!-- =========================
+       VITÓRIA
+  ========================= -->
 
-        <span id="tempoFinal">
-            00
-        </span>s
+  <div id="vitoria" class="tela">
 
-        <br>
+    <h1 class="titulo-final">
+      🎉🏆 DESAFIO CONCLUÍDO 🏆🎉
+    </h1>
 
-        ❌ Erros:
-
-        <span id="errosFinal">
-            0
-        </span>
-
-        <br>
-
-        ⭐ Pontuação:
-
-        <span id="pontuacaoFinal">
-            0
-        </span>
-
+    <div class="mensagem-final">
+      👷‍♀️ Você é um excelente Engenheiro de Produção!
     </div>
 
+    <div class="resultado">
+      📦 Caixas organizadas: <span id="resultadoCaixas">10/10</span>
+      <br>
+      ⭐ Pontuação: <span id="resultadoPontos">0</span>
+      <br>
+      🔧 Problemas eliminados: <span id="resultadoProblemas">0</span>
+      <br>
+      ❌ Erros: <span id="resultadoErros">0</span>
+      <br>
+      ⏱️ Tempo de jogo: <span id="resultadoTempo">0s</span>
+    </div>
 
-    <br>
-
-
-    <button id="botaoReiniciar">
-
-        JOGAR NOVAMENTE
-
+    <button class="botao" onclick="location.reload()">
+      [ JOGAR NOVAMENTE ]
     </button>
 
-</div>
+  </div>
 
+  <!-- =========================
+       GAME OVER
+  ========================= -->
 
-<!-- =====================================================
-     TEMPO ESGOTADO
-===================================================== -->
+  <div id="gameOver" class="tela">
 
-<div id="tempoEsgotado">
-
-    <h1>
-
-        ⏰ Tempo esgotado!
-
+    <h1 class="titulo-final">
+      GAME OVER
     </h1>
 
+    <div class="mensagem-final">
+      ⚠️ A produção foi interrompida porque você atingiu 5 erros.
+    </div>
 
-    <p>
+    <div class="resultado">
+      📦 Caixas organizadas: <span id="gameOverCaixas">0/10</span>
+      <br>
+      ⭐ Pontuação: <span id="gameOverPontos">0</span>
+      <br>
+      🔧 Problemas eliminados: <span id="gameOverProblemas">0</span>
+      <br>
+      ❌ Erros: <span id="gameOverErros">5</span>
+    </div>
 
-        A produção não foi completamente
-        organizada desta vez.
-
-        <br><br>
-
-        Você conseguiu organizar:
-
-        <strong>
-
-            <span id="caixasNoFinal">
-                0
-            </span>/10
-
-        </strong>
-
-        caixas.
-
-    </p>
-
-
-    <p>
-
-        Pontuação:
-
-        <strong>
-
-            <span id="pontuacaoTempo">
-                0
-            </span>
-
-        </strong>
-
-        pontos.
-
-    </p>
-
-
-    <p>
-
-        Tente novamente e veja se consegue
-        completar a missão!
-
-    </p>
-
-
-    <button id="botaoReiniciarTempo">
-
-        TENTAR NOVAMENTE
-
+    <button class="botao" onclick="location.reload()">
+      [ TENTAR NOVAMENTE ]
     </button>
 
-</div>
+  </div>
 
+  <!-- =========================
+       TEMPO ESGOTADO
+  ========================= -->
 
-<!-- =====================================================
-     GAME OVER
-===================================================== -->
+  <div id="tempoEsgotado" class="tela">
 
-<div id="gameOver">
-
-    <h1 class="tituloGameOver">
-
-        GAME OVER ☠️
-
+    <h1 class="titulo-final">
+      ⏱️ TEMPO ESGOTADO
     </h1>
 
+    <div class="mensagem-final">
+      A produção precisa ser mais eficiente!
+    </div>
 
-    <p>
+    <div class="resultado">
+      📦 Caixas organizadas: <span id="tempoCaixas">0/10</span>
+      <br>
+      ⭐ Pontuação: <span id="tempoPontos">0</span>
+      <br>
+      🔧 Problemas eliminados: <span id="tempoProblemas">0</span>
+      <br>
+      ❌ Erros: <span id="tempoErros">0</span>
+    </div>
 
-        Você atingiu o limite de
-        <strong>5 erros</strong>.
-
-        <br><br>
-
-        A linha de produção foi encerrada.
-
-    </p>
-
-
-    <p>
-
-        Pontuação:
-
-        <strong>
-
-            <span id="pontuacaoGameOver">
-                0
-            </span>
-
-        </strong>
-
-        pontos.
-
-    </p>
-
-
-    <p>
-
-        Tente novamente e tome cuidado
-        com suas decisões!
-
-    </p>
-
-
-    <button id="botaoReiniciarErros">
-
-        TENTAR NOVAMENTE
-
+    <button class="botao" onclick="location.reload()">
+      [ TENTAR NOVAMENTE ]
     </button>
 
-</div>
+  </div>
 
+  <script>
 
-<!-- =====================================================
-     ERRO DA CÂMERA
-===================================================== -->
+    /* =====================================================
+       CONFIGURAÇÕES
+    ===================================================== */
 
-<div id="erro">
+    const camera = document.getElementById("camera");
+    const jogo = document.getElementById("jogo");
 
-    Não foi possível acessar a câmera.
-    Verifique a permissão do navegador.
+    const inicio = document.getElementById("inicio");
+    const vitoria = document.getElementById("vitoria");
+    const gameOver = document.getElementById("gameOver");
+    const tempoEsgotado = document.getElementById("tempoEsgotado");
 
-</div>
+    const contadorCaixas = document.getElementById("contadorCaixas");
+    const contadorErros = document.getElementById("contadorErros");
+    const contadorPontos = document.getElementById("contadorPontos");
+    const contadorTempo = document.getElementById("contadorTempo");
 
+    const TEMPO_INICIAL = 60;
+    const TEMPO_MAXIMO = 90;
+    const LIMITE_ERROS = 5;
+    const TOTAL_CAIXAS = 10;
 
-<script>
+    let caixasCorretas = 0;
+    let erros = 0;
+    let pontuacao = 0;
 
-/* =====================================================
-   ELEMENTOS
-===================================================== */
+    let tempoRestante = TEMPO_INICIAL;
+    let tempoDecorrido = 0;
 
-const botaoIniciar =
-    document.getElementById(
-        "botaoIniciar"
-    );
+    let problemasEliminados = 0;
 
-const botaoReiniciar =
-    document.getElementById(
-        "botaoReiniciar"
-    );
+    let jogoRodando = false;
+    let intervaloTempo = null;
+    let animationFrame = null;
 
-const botaoReiniciarTempo =
-    document.getElementById(
-        "botaoReiniciarTempo"
-    );
+    let bonusTempoConcedidos = 0;
 
-const botaoReiniciarErros =
-    document.getElementById(
-        "botaoReiniciarErros"
-    );
+    /* =====================================================
+       PROBLEMAS QUE CAEM
+    ===================================================== */
 
-const inicio =
-    document.getElementById(
-        "inicio"
-    );
-
-const jogo =
-    document.getElementById(
-        "jogo"
-    );
-
-const camera =
-    document.getElementById(
-        "camera"
-    );
-
-const final =
-    document.getElementById(
-        "final"
-    );
-
-const tempoEsgotado =
-    document.getElementById(
-        "tempoEsgotado"
-    );
-
-const gameOver =
-    document.getElementById(
-        "gameOver"
-    );
-
-const erro =
-    document.getElementById(
-        "erro"
-    );
-
-const contador =
-    document.getElementById(
-        "contador"
-    );
-
-const errosElemento =
-    document.getElementById(
-        "erros"
-    );
-
-const tempoElemento =
-    document.getElementById(
-        "tempo"
-    );
-
-const pontuacaoElemento =
-    document.getElementById(
-        "pontuacao"
-    );
-
-const tempoFinal =
-    document.getElementById(
-        "tempoFinal"
-    );
-
-const errosFinal =
-    document.getElementById(
-        "errosFinal"
-    );
-
-const pontuacaoFinal =
-    document.getElementById(
-        "pontuacaoFinal"
-    );
-
-const caixasNoFinal =
-    document.getElementById(
-        "caixasNoFinal"
-    );
-
-const pontuacaoTempo =
-    document.getElementById(
-        "pontuacaoTempo"
-    );
-
-const pontuacaoGameOver =
-    document.getElementById(
-        "pontuacaoGameOver"
-    );
-
-const problemasContainer =
-    document.getElementById(
-        "problemas"
-    );
-
-
-/* =====================================================
-   CONFIGURAÇÕES
-===================================================== */
-
-const TOTAL_CAIXAS = 10;
-
-const TOTAL_SETORES = 5;
-
-const TEMPO_INICIAL = 60;
-
-const TEMPO_MAXIMO = 90;
-
-const BONUS_TEMPO = 5;
-
-const PONTOS_PARA_BONUS = 30;
-
-const VELOCIDADE_ESTEIRA = 0.022;
-
-const DISTANCIA_MINIMA = 180;
-
-
-/* =====================================================
-   TIPOS DE PROBLEMAS
-===================================================== */
-
-const tiposProblemas = [
-
-    {
+    const tiposProblemas = [
+      {
         emoji: "🔨",
         pontos: 10
-    },
-
-    {
+      },
+      {
         emoji: "🪛",
         pontos: 8
-    },
-
-    {
-        emoji: "🔩",
-        pontos: 5
-    },
-
-    {
+      },
+      {
         emoji: "⚙️",
         pontos: 7
-    },
-
-    {
+      },
+      {
         emoji: "🔧",
         pontos: 6
-    },
+      },
+      {
+        emoji: "🔩",
+        pontos: 5
+      }
+    ];
 
-    {
-        emoji: "🧰",
-        pontos: 9
-    }
+    const problemasAtivos = [];
 
-];
+    let proximoSpawn = 0;
 
+    /* =====================================================
+       CAIXAS
+    ===================================================== */
 
-/* =====================================================
-   VARIÁVEIS
-===================================================== */
+    const dadosCaixas = [
 
-let tempoRestante =
-    TEMPO_INICIAL;
+      /* RECEBIMENTO */
 
-let caixasCorretas =
-    0;
+      {
+        texto: "Lote 08 — recebimento de fornecedor",
+        setor: "recebimento"
+      },
 
-let quantidadeErros =
-    0;
+      {
+        texto: "Matéria-prima — chegada ao estoque",
+        setor: "recebimento"
+      },
 
-let pontuacao =
-    0;
+      /* MONTAGEM */
 
-let ultimoBonus =
-    0;
+      {
+        texto: "Kit de componentes para fabricação",
+        setor: "montagem"
+      },
 
-let intervaloTempo =
-    null;
+      {
+        texto: "Ordem de produção — linha 02",
+        setor: "montagem"
+      },
 
-let animacaoEsteira =
-    null;
+      /* INSPEÇÃO */
 
-let intervaloProblemas =
-    null;
+      {
+        texto: "Amostra 23 — verificar dimensões",
+        setor: "inspecao"
+      },
 
-let jogoAtivo =
-    false;
+      {
+        texto: "Produto — teste de qualidade",
+        setor: "inspecao"
+      },
 
+      /* SEPARAÇÃO */
 
-/* =====================================================
-   CAIXAS
-===================================================== */
+      {
+        texto: "Kit 04 — componentes A, B e C",
+        setor: "separacao"
+      },
 
-const caixas =
-    Array.from(
-        document.querySelectorAll(
-            ".caixa"
-        )
-    );
+      {
+        texto: "Pedido — separar componentes",
+        setor: "separacao"
+      },
 
+      /* EXPEDIÇÃO */
 
-const dadosCaixas =
-    caixas.map(
-        function(
-            caixa,
-            indice
-        ) {
+      {
+        texto: "Pedido 482 — produto finalizado",
+        setor: "expedicao"
+      },
 
-            return {
+      {
+        texto: "Caixa pronta — envio ao cliente",
+        setor: "expedicao"
+      }
 
-                elemento:
-                    caixa,
+    ];
 
-                x:
-                    -150,
+    /* =====================================================
+       CÂMERA
+    ===================================================== */
 
-                organizada:
-                    false,
+    async function iniciarCamera() {
 
-                selecionada:
-                    false,
+      try {
 
-                esperando:
-                    false,
-
-                ordem:
-                    indice
-
-            };
-
-        }
-    );
-
-
-/* =====================================================
-   INICIAR JOGO
-===================================================== */
-
-async function iniciarJogo() {
-
-    try {
-
-        const stream =
-            await navigator
-            .mediaDevices
-            .getUserMedia({
-
-                video: {
-
-                    facingMode: {
-
-                        ideal:
-                            "environment"
-
-                    }
-
-                },
-
-                audio:
-                    false
-
-            });
-
-
-        camera.srcObject =
-            stream;
-
-
-        inicio.style.display =
-            "none";
-
-
-        jogo.style.display =
-            "block";
-
-
-        prepararCaixas();
-
-
-        tempoRestante =
-            TEMPO_INICIAL;
-
-
-        caixasCorretas =
-            0;
-
-
-        quantidadeErros =
-            0;
-
-
-        pontuacao =
-            0;
-
-
-        ultimoBonus =
-            0;
-
-
-        contador.innerText =
-            "0";
-
-
-        errosElemento.innerText =
-            "0";
-
-
-        pontuacaoElemento.innerText =
-            "0";
-
-
-        tempoElemento.innerText =
-            tempoRestante;
-
-
-        jogoAtivo =
-            true;
-
-
-        iniciarCronometro();
-
-        iniciarEsteira();
-
-        iniciarProblemas();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            error
-        );
-
-        erro.style.display =
-            "block";
-
-    }
-
-}
-
-
-/* =====================================================
-   PREPARAR CAIXAS
-===================================================== */
-
-function prepararCaixas() {
-
-    const ordem =
-        [...dadosCaixas]
-        .sort(
-            () =>
-                Math.random() -
-                0.5
-        );
-
-
-    ordem.forEach(
-        function(
-            dado,
-            indice
-        ) {
-
-            dado.x =
-                -150 -
-                indice *
-                DISTANCIA_MINIMA;
-
-
-            dado.organizada =
-                false;
-
-
-            dado.selecionada =
-                false;
-
-
-            dado.esperando =
-                false;
-
-
-            dado.elemento
-                .classList
-                .remove(
-                    "correta"
-                );
-
-
-            dado.elemento.style.display =
-                "flex";
-
-
-            dado.elemento.style.left =
-                dado.x + "px";
-
-
-            dado.elemento.style.top =
-
-                (
-
-                    window.innerHeight *
-                    0.50 -
-
-                    32
-
-                ) + "px";
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   CRONÔMETRO
-===================================================== */
-
-function iniciarCronometro() {
-
-    clearInterval(
-        intervaloTempo
-    );
-
-
-    intervaloTempo =
-        setInterval(
-
-            function() {
-
-                if (!jogoAtivo) {
-
-                    return;
-
-                }
-
-
-                tempoRestante--;
-
-
-                tempoElemento.innerText =
-                    tempoRestante;
-
-
-                if (
-                    tempoRestante <= 0
-                ) {
-
-                    terminarPorTempo();
-
-                }
-
-            },
-
-            1000
-
-        );
-
-}
-
-
-/* =====================================================
-   ESTEIRA
-===================================================== */
-
-function iniciarEsteira() {
-
-    cancelAnimationFrame(
-        animacaoEsteira
-    );
-
-
-    function mover() {
-
-        if (!jogoAtivo) {
-
-            return;
-
-        }
-
-
-        const larguraTela =
-            window.innerWidth;
-
-
-        const posicaoEsteira =
-
-            window.innerHeight *
-            0.50 -
-            32;
-
-
-        const caixasAtivas =
-
-            dadosCaixas
-
-            .filter(
-                function(
-                    dado
-                ) {
-
-                    return (
-                        !dado.organizada
-                    );
-
-                }
-            )
-
-            .sort(
-                function(
-                    a,
-                    b
-                ) {
-
-                    return (
-                        a.x -
-                        b.x
-                    );
-
-                }
-            );
-
-
-        caixasAtivas.forEach(
-
-            function(
-                dado
-            ) {
-
-                if (
-                    dado.selecionada
-                ) {
-
-                    return;
-
-                }
-
-
-                dado.x +=
-
-                    VELOCIDADE_ESTEIRA *
-                    60;
-
-
-                if (
-                    dado.x >
-                    larguraTela +
-                    20
-                ) {
-
-                    let menorX =
-                        0;
-
-
-                    const outras =
-
-                        dadosCaixas
-
-                        .filter(
-
-                            function(
-                                item
-                            ) {
-
-                                return (
-
-                                    item !==
-                                        dado &&
-
-                                    !item.organizada &&
-
-                                    !item.selecionada
-
-                                );
-
-                            }
-
-                        );
-
-
-                    if (
-                        outras.length >
-                        0
-                    ) {
-
-                        menorX =
-                            Math.min(
-
-                                ...outras.map(
-
-                                    function(
-                                        item
-                                    ) {
-
-                                        return (
-                                            item.x
-                                        );
-
-                                    }
-
-                                )
-
-                            );
-
-                    }
-
-
-                    dado.x =
-
-                        menorX -
-                        DISTANCIA_MINIMA;
-
-
-                    dado.esperando =
-                        true;
-
-                }
-
-
-                dado.elemento.style.left =
-                    dado.x + "px";
-
-
-                dado.elemento.style.top =
-                    posicaoEsteira +
-                    "px";
-
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: {
+              ideal: "environment"
             }
+          },
+          audio: false
+        });
 
+        camera.srcObject = stream;
+
+      } catch (erro) {
+
+        console.error("Não foi possível acessar a câmera:", erro);
+
+        alert(
+          "Não foi possível acessar a câmera. " +
+          "Verifique a permissão do navegador."
         );
 
-
-        animacaoEsteira =
-            requestAnimationFrame(
-                mover
-            );
+      }
 
     }
 
+    iniciarCamera();
 
-    mover();
+    /* =====================================================
+       INICIAR JOGO
+    ===================================================== */
 
-}
+    document
+      .getElementById("btnIniciar")
+      .addEventListener("click", iniciarJogo);
 
+    function iniciarJogo() {
 
-/* =====================================================
-   ARRASTAR CAIXAS
-===================================================== */
+      inicio.style.display = "none";
 
-let caixaArrastada =
-    null;
+      jogo.style.display = "block";
 
-let offsetX =
-    0;
+      caixasCorretas = 0;
+      erros = 0;
+      pontuacao = 0;
 
-let offsetY =
-    0;
+      tempoRestante = TEMPO_INICIAL;
+      tempoDecorrido = 0;
 
+      problemasEliminados = 0;
 
-caixas.forEach(
+      bonusTempoConcedidos = 0;
 
-    function(
-        caixa
-    ) {
+      jogoRodando = true;
 
-        caixa.addEventListener(
-            "pointerdown",
-            iniciarArraste
-        );
+      atualizarHUD();
 
-    }
+      criarCaixas();
 
-);
+      iniciarContagemTempo();
 
-
-function iniciarArraste(
-    evento
-) {
-
-    if (!jogoAtivo) {
-
-        return;
+      iniciarAnimacao();
 
     }
 
+    /* =====================================================
+       HUD
+    ===================================================== */
 
-    const caixa =
-        evento.currentTarget;
+    function atualizarHUD() {
 
+      contadorCaixas.textContent =
+        `${caixasCorretas}/${TOTAL_CAIXAS}`;
 
-    const dado =
-        dadosCaixas.find(
+      contadorErros.textContent =
+        erros;
 
-            function(
-                item
-            ) {
+      contadorPontos.textContent =
+        pontuacao;
 
-                return (
-                    item.elemento ===
-                    caixa
-                );
-
-            }
-
-        );
-
-
-    if (
-        !dado ||
-        dado.organizada
-    ) {
-
-        return;
+      contadorTempo.textContent =
+        `${tempoRestante}s`;
 
     }
 
+    /* =====================================================
+       CRIAR CAIXAS
+    ===================================================== */
 
-    caixaArrastada =
-        dado;
+    function criarCaixas() {
 
+      dadosCaixas.forEach((dados, indice) => {
 
-    dado.selecionada =
-        true;
+        const caixa = document.createElement("div");
 
+        caixa.className = "caixa";
 
-    const rect =
+        caixa.textContent = dados.texto;
+
+        caixa.dataset.setor = dados.setor;
+
+        caixa.dataset.indice = indice;
+
+        caixa.style.left =
+          `${-160 - (indice * 175)}px`;
+
+        caixa.style.top =
+          "calc(48% - 38px)";
+
+        jogo.appendChild(caixa);
+
+        configurarArraste(caixa);
+
+      });
+
+    }
+
+    /* =====================================================
+       ARRASTAR CAIXAS
+    ===================================================== */
+
+    function configurarArraste(caixa) {
+
+      let arrastando = false;
+
+      let offsetX = 0;
+      let offsetY = 0;
+
+      caixa.addEventListener("pointerdown", iniciarArraste);
+
+      function iniciarArraste(evento) {
+
+        if (!jogoRodando) return;
+
+        arrastando = true;
+
+        caixa.classList.add("arrastando");
+
+        caixa.setPointerCapture(evento.pointerId);
+
+        const rect =
+          caixa.getBoundingClientRect();
+
+        offsetX =
+          evento.clientX - rect.left;
+
+        offsetY =
+          evento.clientY - rect.top;
+
+        evento.preventDefault();
+
+      }
+
+      caixa.addEventListener("pointermove", moverCaixa);
+
+      function moverCaixa(evento) {
+
+        if (!arrastando || !jogoRodando) {
+          return;
+        }
+
+        const x =
+          evento.clientX - offsetX;
+
+        const y =
+          evento.clientY - offsetY;
+
+        caixa.style.left =
+          `${x}px`;
+
+        caixa.style.top =
+          `${y}px`;
+
+      }
+
+      caixa.addEventListener("pointerup", finalizarArraste);
+
+      caixa.addEventListener("pointercancel", finalizarArraste);
+
+      function finalizarArraste(evento) {
+
+        if (!arrastando) return;
+
+        arrastando = false;
+
+        caixa.classList.remove("arrastando");
+
+        verificarSetor(caixa);
+
+      }
+
+    }
+
+    /* =====================================================
+       VERIFICAR SETOR
+    ===================================================== */
+
+    function verificarSetor(caixa) {
+
+      const setorCorreto =
+        document.getElementById(caixa.dataset.setor);
+
+      const caixaRect =
         caixa.getBoundingClientRect();
 
+      const setorRect =
+        setorCorreto.getBoundingClientRect();
 
-    offsetX =
-        evento.clientX -
-        rect.left;
-
-
-    offsetY =
-        evento.clientY -
-        rect.top;
-
-
-    caixa.setPointerCapture(
-        evento.pointerId
-    );
-
-
-    caixa.addEventListener(
-        "pointermove",
-        moverCaixa
-    );
-
-
-    caixa.addEventListener(
-        "pointerup",
-        soltarCaixa
-    );
-
-}
-
-
-/* =====================================================
-   MOVER CAIXA
-===================================================== */
-
-function moverCaixa(
-    evento
-) {
-
-    if (
-        !caixaArrastada
-    ) {
-
-        return;
-
-    }
-
-
-    const caixa =
-        caixaArrastada.elemento;
-
-
-    let x =
-
-        evento.clientX -
-        offsetX;
-
-
-    let y =
-
-        evento.clientY -
-        offsetY;
-
-
-    x =
-
-        Math.max(
-
-            0,
-
-            Math.min(
-
-                x,
-
-                window.innerWidth -
-                caixa.offsetWidth
-
-            )
-
-        );
-
-
-    y =
-
-        Math.max(
-
-            80,
-
-            Math.min(
-
-                y,
-
-                window.innerHeight -
-                caixa.offsetHeight -
-                10
-
-            )
-
-        );
-
-
-    caixa.style.left =
-        x + "px";
-
-
-    caixa.style.top =
-        y + "px";
-
-}
-
-
-/* =====================================================
-   SOLTAR CAIXA
-===================================================== */
-
-function soltarCaixa(
-    evento
-) {
-
-    if (
-        !caixaArrastada
-    ) {
-
-        return;
-
-    }
-
-
-    const dado =
-        caixaArrastada;
-
-
-    const caixa =
-        dado.elemento;
-
-
-    caixa.removeEventListener(
-        "pointermove",
-        moverCaixa
-    );
-
-
-    caixa.removeEventListener(
-        "pointerup",
-        soltarCaixa
-    );
-
-
-    verificarDestino(
-        dado
-    );
-
-
-    caixaArrastada =
-        null;
-
-}
-
-
-/* =====================================================
-   VERIFICAR DESTINO
-===================================================== */
-
-function verificarDestino(
-    dado
-) {
-
-    const caixa =
-        dado.elemento;
-
-
-    const setorCorreto =
-        caixa.dataset.setor;
-
-
-    const setor =
-        document.getElementById(
-            setorCorreto
-        );
-
-
-    const caixaRect =
-        caixa.getBoundingClientRect();
-
-
-    const setorRect =
-        setor.getBoundingClientRect();
-
-
-    const centroX =
-
+      const centroX =
         caixaRect.left +
         caixaRect.width / 2;
 
-
-    const centroY =
-
+      const centroY =
         caixaRect.top +
         caixaRect.height / 2;
 
+      const dentroDoSetor =
+        centroX >= setorRect.left &&
+        centroX <= setorRect.right &&
+        centroY >= setorRect.top &&
+        centroY <= setorRect.bottom;
 
-    const dentroDoSetor =
+      if (dentroDoSetor) {
 
-        centroX >=
-        setorRect.left &&
-
-        centroX <=
-        setorRect.right &&
-
-        centroY >=
-        setorRect.top &&
-
-        centroY <=
-        setorRect.bottom;
-
-
-    if (
-        dentroDoSetor
-    ) {
-
-        dado.organizada =
-            true;
-
-
-        dado.selecionada =
-            false;
-
-
-        caixa.classList.add(
-            "correta"
-        );
-
+        caixa.classList.add("correta");
 
         caixasCorretas++;
 
+        atualizarHUD();
 
-        contador.innerText =
-            caixasCorretas;
+        if (caixasCorretas >= TOTAL_CAIXAS) {
 
-
-        if (
-            caixasCorretas ===
-            TOTAL_CAIXAS
-        ) {
-
-            finalizarVitoria();
+          setTimeout(
+            finalizarVitoria,
+            350
+          );
 
         }
 
-    }
+      } else {
 
-    else {
+        erros++;
 
-        quantidadeErros++;
+        atualizarHUD();
 
+        if (erros >= LIMITE_ERROS) {
 
-        errosElemento.innerText =
-            quantidadeErros;
+          finalizarGameOver();
 
-
-        if (
-            quantidadeErros >=
-            5
-        ) {
-
-            finalizarGameOver();
-
-            return;
+          return;
 
         }
 
-
-        const outras =
-
-            dadosCaixas
-
-            .filter(
-
-                function(
-                    item
-                ) {
-
-                    return (
-
-                        item !==
-                            dado &&
-
-                        !item.organizada &&
-
-                        !item.selecionada
-
-                    );
-
-                }
-
-            );
-
-
-        let menorX =
-            0;
-
-
-        if (
-            outras.length >
-            0
-        ) {
-
-            menorX =
-                Math.min(
-
-                    ...outras.map(
-
-                        function(
-                            item
-                        ) {
-
-                            return (
-                                item.x
-                            );
-
-                        }
-
-                    )
-
-                );
-
-        }
-
-
-        dado.x =
-            menorX -
-            DISTANCIA_MINIMA;
-
-
-        dado.selecionada =
-            false;
-
-
-        caixa.style.left =
-            dado.x + "px";
-
+        /* Volta para a esteira */
 
         caixa.style.top =
+          "calc(48% - 38px)";
 
-            (
-
-                window.innerHeight *
-                0.50 -
-                32
-
-            ) + "px";
+      }
 
     }
 
-}
+    /* =====================================================
+       TEMPO
+    ===================================================== */
 
+    function iniciarContagemTempo() {
 
-/* =====================================================
-   INICIAR PROBLEMAS
-===================================================== */
+      clearInterval(intervaloTempo);
 
-function iniciarProblemas() {
+      intervaloTempo =
+        setInterval(() => {
 
-    clearInterval(
-        intervaloProblemas
-    );
+          if (!jogoRodando) return;
 
+          tempoRestante--;
 
-    intervaloProblemas =
+          tempoDecorrido++;
 
-        setInterval(
+          atualizarHUD();
 
-            function() {
+          if (tempoRestante <= 0) {
 
-                if (!jogoAtivo) {
+            tempoRestante = 0;
 
-                    return;
+            atualizarHUD();
 
-                }
+            finalizarTempoEsgotado();
 
+          }
 
-                criarProblema();
+        }, 1000);
 
-            },
+    }
 
-            2200
+    /* =====================================================
+       ANIMAÇÃO PRINCIPAL
+    ===================================================== */
 
-        );
+    function iniciarAnimacao() {
 
-}
+      cancelAnimationFrame(animationFrame);
 
-
-/* =====================================================
-   CRIAR PROBLEMA
-===================================================== */
-
-function criarProblema() {
-
-    const tipo =
-
-        tiposProblemas[
-
-            Math.floor(
-
-                Math.random() *
-                tiposProblemas.length
-
-            )
-
-        ];
-
-
-    const problema =
-        document.createElement(
-            "div"
-        );
-
-
-    problema.className =
-        "problema";
-
-
-    problema.innerText =
-        tipo.emoji;
-
-
-    problema.dataset.pontos =
-        tipo.pontos;
-
-
-    const largura =
-        window.innerWidth;
-
-
-    const posicaoX =
-
-        Math.random() *
-        (largura - 60);
-
-
-    problema.style.left =
-        posicaoX + "px";
-
-
-    problemasContainer.appendChild(
-        problema
-    );
-
-
-    const duracao =
-
-        4500 +
-        Math.random() * 2000;
-
-
-    let inicioQueda =
+      let ultimoTempo =
         performance.now();
 
+      function loop(agora) {
 
-    let animacao =
-        null;
+        if (!jogoRodando) return;
 
+        const delta =
+          Math.min(
+            0.05,
+            (agora - ultimoTempo) / 1000
+          );
 
-    function cair(
-        agora
-    ) {
+        ultimoTempo = agora;
 
-        if (!jogoAtivo) {
+        moverCaixas(delta);
 
-            if (animacao) {
+        atualizarProblemas(delta);
 
-                cancelAnimationFrame(
-                    animacao
-                );
+        verificarSpawn(agora);
 
-            }
+        animationFrame =
+          requestAnimationFrame(loop);
 
-            problema.remove();
+      }
 
-            return;
+      animationFrame =
+        requestAnimationFrame(loop);
 
-        }
+    }
 
+    /* =====================================================
+       MOVER CAIXAS
+    ===================================================== */
 
-        const progresso =
+    function moverCaixas(delta) {
 
-            (
-                agora -
-                inicioQueda
-            ) /
-            duracao;
+      const caixas =
+        document.querySelectorAll(".caixa");
 
-
-        const altura =
-            window.innerHeight +
-            80;
-
-
-        const y =
-
-            -70 +
-            progresso *
-            altura;
-
-
-        problema.style.transform =
-
-            `translateY(${y}px)`;
-
+      caixas.forEach((caixa) => {
 
         if (
-            progresso >= 1
+          caixa.classList.contains("arrastando") ||
+          caixa.classList.contains("correta")
+        ) {
+          return;
+        }
+
+        let x =
+          parseFloat(caixa.style.left) || 0;
+
+        x += 78 * delta;
+
+        caixa.style.left =
+          `${x}px`;
+
+        if (
+          x >
+          window.innerWidth + 150
         ) {
 
-            perderPontos(
-
-                tipo.pontos,
-
-                problema
-
-            );
-
-            return;
+          caixa.style.left =
+            `${-170}px`;
 
         }
 
-
-        animacao =
-            requestAnimationFrame(
-                cair
-            );
+      });
 
     }
 
+    /* =====================================================
+       SPAWN DOS PROBLEMAS
+    ===================================================== */
 
-    problema.addEventListener(
+    function verificarSpawn(agora) {
 
+      if (agora < proximoSpawn) {
+        return;
+      }
+
+      criarProblema();
+
+      const intervalo =
+        850 +
+        Math.random() * 700;
+
+      proximoSpawn =
+        agora + intervalo;
+
+    }
+
+    function criarProblema() {
+
+      if (!jogoRodando) return;
+
+      const tipo =
+        tiposProblemas[
+          Math.floor(
+            Math.random() *
+            tiposProblemas.length
+          )
+        ];
+
+      const problema =
+        document.createElement("div");
+
+      problema.className =
+        "problema-caindo";
+
+      problema.textContent =
+        tipo.emoji;
+
+      problema.dataset.pontos =
+        tipo.pontos;
+
+      const largura =
+        window.innerWidth;
+
+      const posicaoX =
+        15 +
+        Math.random() * 70;
+
+      problema.style.left =
+        `${posicaoX}%`;
+
+      problema.style.top =
+        "-65px";
+
+      jogo.appendChild(problema);
+
+      const objeto = {
+        elemento: problema,
+        velocidade:
+          90 +
+          Math.random() * 70,
+        pontos: tipo.pontos,
+        eliminado: false
+      };
+
+      problemasAtivos.push(objeto);
+
+      problema.addEventListener(
         "pointerdown",
+        (evento) => {
 
-        function(
-            evento
-        ) {
+          evento.preventDefault();
+          evento.stopPropagation();
 
-            evento.preventDefault();
+          eliminarProblema(objeto);
 
-            evento.stopPropagation();
+        }
+      );
 
+    }
 
-            if (!jogoAtivo) {
+    /* =====================================================
+       ATUALIZAR PROBLEMAS
+    ===================================================== */
 
-                return;
+    function atualizarProblemas(delta) {
 
-            }
+      for (
+        let i = problemasAtivos.length - 1;
+        i >= 0;
+        i--
+      ) {
 
+        const problema =
+          problemasAtivos[i];
 
-            eliminarProblema(
+        if (problema.eliminado) {
 
-                problema,
+          problemasAtivos.splice(i, 1);
 
-                tipo.pontos
-
-            );
-
-
-            if (animacao) {
-
-                cancelAnimationFrame(
-                    animacao
-                );
-
-            }
+          continue;
 
         }
 
-    );
+        const elemento =
+          problema.elemento;
 
+        let y =
+          parseFloat(elemento.style.top) || -65;
 
-    animacao =
-        requestAnimationFrame(
-            cair
-        );
+        y +=
+          problema.velocidade * delta;
 
-}
+        elemento.style.top =
+          `${y}px`;
 
+        if (
+          y >
+          window.innerHeight + 30
+        ) {
 
-/* =====================================================
-   ELIMINAR PROBLEMA
-===================================================== */
+          perderPontosProblema(problema);
 
-function eliminarProblema(
+          elemento.remove();
 
-    problema,
+          problemasAtivos.splice(i, 1);
 
-    pontos
+        }
 
-) {
-
-    if (
-
-        problema.classList.contains(
-            "eliminado"
-        )
-
-    ) {
-
-        return;
+      }
 
     }
 
+    /* =====================================================
+       ELIMINAR PROBLEMA
+    ===================================================== */
 
-    pontuacao +=
-        pontos;
+    function eliminarProblema(problema) {
 
-
-    pontuacaoElemento.innerText =
-        pontuacao;
-
-
-    verificarBonusTempo();
-
-
-    mostrarPontos(
-
-        problema,
-
-        "✨ +" +
-        pontos
-
-    );
-
-
-    problema.classList.add(
-        "eliminado"
-    );
-
-
-    setTimeout(
-
-        function() {
-
-            problema.remove();
-
-        },
-
-        350
-
-    );
-
-}
-
-
-/* =====================================================
-   PERDER PONTOS
-===================================================== */
-
-function perderPontos(
-
-    pontos,
-
-    problema
-
-) {
-
-    if (
-
-        problema.classList.contains(
-            "eliminado"
-        )
-
-    ) {
-
+      if (
+        !jogoRodando ||
+        problema.eliminado
+      ) {
         return;
+      }
+
+      problema.eliminado = true;
+
+      problemasEliminados++;
+
+      pontuacao +=
+        problema.pontos;
+
+      verificarBonusTempo();
+
+      atualizarHUD();
+
+      mostrarRecompensa(
+        problema.elemento,
+        problema.pontos
+      );
+
+      problema.elemento.classList.add(
+        "problema-eliminado"
+      );
+
+      setTimeout(() => {
+
+        if (problema.elemento) {
+          problema.elemento.remove();
+        }
+
+      }, 350);
 
     }
 
+    /* =====================================================
+       PERDER PONTOS
+    ===================================================== */
 
-    pontuacao =
+    function perderPontosProblema(problema) {
 
+      pontuacao =
         Math.max(
-
-            0,
-
-            pontuacao -
-            pontos
-
+          0,
+          pontuacao - problema.pontos
         );
 
+      atualizarHUD();
 
-    pontuacaoElemento.innerText =
-        pontuacao;
-
-
-    mostrarPontos(
-
-        problema,
-
-        "−" +
-        pontos
-
-    );
-
-
-    problema.classList.add(
-        "eliminado"
-    );
-
-
-    setTimeout(
-
-        function() {
-
-            problema.remove();
-
-        },
-
-        350
-
-    );
-
-}
-
-
-/* =====================================================
-   BÔNUS DE TEMPO
-===================================================== */
-
-function verificarBonusTempo() {
-
-    const novosBonus =
-
-        Math.floor(
-
-            pontuacao /
-            PONTOS_PARA_BONUS
-
-        );
-
-
-    if (
-        novosBonus >
-        ultimoBonus
-    ) {
-
-        const quantidadeBonus =
-
-            novosBonus -
-            ultimoBonus;
-
-
-        tempoRestante =
-
-            Math.min(
-
-                TEMPO_MAXIMO,
-
-                tempoRestante +
-                quantidadeBonus *
-                BONUS_TEMPO
-
-            );
-
-
-        tempoElemento.innerText =
-            tempoRestante;
-
-
-        ultimoBonus =
-            novosBonus;
+      mostrarPenalidade(
+        problema.elemento,
+        problema.pontos
+      );
 
     }
 
-}
+    /* =====================================================
+       RECOMPENSA
+    ===================================================== */
 
+    function mostrarRecompensa(
+      elemento,
+      pontos
+    ) {
 
-/* =====================================================
-   MOSTRAR RECOMPENSA
-===================================================== */
-
-function mostrarPontos(
-
-    elemento,
-
-    texto
-
-) {
-
-    const rect =
+      const rect =
         elemento.getBoundingClientRect();
 
+      const recompensa =
+        document.createElement("div");
 
-    const textoPontos =
-        document.createElement(
-            "div"
+      recompensa.className =
+        "recompensa";
+
+      recompensa.textContent =
+        `✨ +${pontos} ✨`;
+
+      recompensa.style.left =
+        `${rect.left + rect.width / 2}px`;
+
+      recompensa.style.top =
+        `${rect.top}px`;
+
+      jogo.appendChild(recompensa);
+
+      setTimeout(() => {
+        recompensa.remove();
+      }, 800);
+
+    }
+
+    /* =====================================================
+       PENALIDADE
+    ===================================================== */
+
+    function mostrarPenalidade(
+      elemento,
+      pontos
+    ) {
+
+      const rect =
+        elemento.getBoundingClientRect();
+
+      const penalidade =
+        document.createElement("div");
+
+      penalidade.className =
+        "penalidade";
+
+      penalidade.textContent =
+        `-${pontos}`;
+
+      penalidade.style.left =
+        `${rect.left + rect.width / 2}px`;
+
+      penalidade.style.top =
+        `${rect.top}px`;
+
+      jogo.appendChild(penalidade);
+
+      setTimeout(() => {
+        penalidade.remove();
+      }, 750);
+
+    }
+
+    /* =====================================================
+       BÔNUS DE TEMPO
+    ===================================================== */
+
+    function verificarBonusTempo() {
+
+      const novosBonus =
+        Math.floor(
+          pontuacao / 30
         );
 
+      while (
+        bonusTempoConcedidos <
+        novosBonus
+      ) {
 
-    textoPontos.className =
-        "pontos-flutuantes";
+        bonusTempoConcedidos++;
 
+        const tempoAntes =
+          tempoRestante;
 
-    textoPontos.innerText =
-        texto;
+        tempoRestante =
+          Math.min(
+            TEMPO_MAXIMO,
+            tempoRestante + 5
+          );
 
-
-    textoPontos.style.left =
-
-        (
-
-            rect.left +
-            rect.width / 2 -
-            20
-
-        ) + "px";
-
-
-    textoPontos.style.top =
-
-        rect.top + "px";
-
-
-    document.body.appendChild(
-        textoPontos
-    );
-
-
-    setTimeout(
-
-        function() {
-
-            textoPontos.remove();
-
-        },
-
-        900
-
-    );
-
-}
-
-
-/* =====================================================
-   LIMPAR PROBLEMAS
-===================================================== */
-
-function limparProblemas() {
-
-    clearInterval(
-        intervaloProblemas
-    );
-
-
-    const problemas =
-        document.querySelectorAll(
-            ".problema"
-        );
-
-
-    problemas.forEach(
-
-        function(
-            problema
+        if (
+          tempoRestante >
+          tempoAntes
         ) {
 
-            problema.remove();
+          mostrarBonusTempo();
 
         }
 
-    );
+      }
 
-}
-
-
-/* =====================================================
-   VITÓRIA
-===================================================== */
-
-function finalizarVitoria() {
-
-    jogoAtivo =
-        false;
-
-
-    clearInterval(
-        intervaloTempo
-    );
-
-
-    clearInterval(
-        intervaloProblemas
-    );
-
-
-    cancelAnimationFrame(
-        animacaoEsteira
-    );
-
-
-    limparProblemas();
-
-
-    tempoFinal.innerText =
-
-        TEMPO_INICIAL -
-        tempoRestante;
-
-
-    errosFinal.innerText =
-        quantidadeErros;
-
-
-    pontuacaoFinal.innerText =
-        pontuacao;
-
-
-    setTimeout(
-
-        function() {
-
-            jogo.style.display =
-                "none";
-
-
-            final.style.display =
-                "flex";
-
-        },
-
-        400
-
-    );
-
-}
-
-
-/* =====================================================
-   GAME OVER
-===================================================== */
-
-function finalizarGameOver() {
-
-    jogoAtivo =
-        false;
-
-
-    clearInterval(
-        intervaloTempo
-    );
-
-
-    clearInterval(
-        intervaloProblemas
-    );
-
-
-    cancelAnimationFrame(
-        animacaoEsteira
-    );
-
-
-    limparProblemas();
-
-
-    pontuacaoGameOver.innerText =
-        pontuacao;
-
-
-    setTimeout(
-
-        function() {
-
-            jogo.style.display =
-                "none";
-
-
-            gameOver.style.display =
-                "flex";
-
-        },
-
-        300
-
-    );
-
-}
-
-
-/* =====================================================
-   TEMPO ESGOTADO
-===================================================== */
-
-function terminarPorTempo() {
-
-    jogoAtivo =
-        false;
-
-
-    clearInterval(
-        intervaloTempo
-    );
-
-
-    clearInterval(
-        intervaloProblemas
-    );
-
-
-    cancelAnimationFrame(
-        animacaoEsteira
-    );
-
-
-    limparProblemas();
-
-
-    caixasNoFinal.innerText =
-        caixasCorretas;
-
-
-    pontuacaoTempo.innerText =
-        pontuacao;
-
-
-    setTimeout(
-
-        function() {
-
-            jogo.style.display =
-                "none";
-
-
-            tempoEsgotado.style.display =
-                "flex";
-
-        },
-
-        300
-
-    );
-
-}
-
-
-/* =====================================================
-   REINICIAR
-===================================================== */
-
-botaoReiniciar.addEventListener(
-
-    "click",
-
-    function() {
-
-        location.reload();
+      atualizarHUD();
 
     }
 
-);
+    function mostrarBonusTempo() {
 
+      const bonus =
+        document.createElement("div");
 
-botaoReiniciarTempo.addEventListener(
+      bonus.className =
+        "bonus-tempo";
 
-    "click",
+      bonus.textContent =
+        "✨ +5 SEGUNDOS! ✨";
 
-    function() {
+      jogo.appendChild(bonus);
 
-        location.reload();
-
-    }
-
-);
-
-
-botaoReiniciarErros.addEventListener(
-
-    "click",
-
-    function() {
-
-        location.reload();
+      setTimeout(() => {
+        bonus.remove();
+      }, 1300);
 
     }
 
-);
+    /* =====================================================
+       FINALIZAR JOGO
+    ===================================================== */
 
+    function pararJogo() {
 
-/* =====================================================
-   INICIAR
-===================================================== */
+      jogoRodando = false;
 
-botaoIniciar.addEventListener(
+      clearInterval(intervaloTempo);
 
-    "click",
+      cancelAnimationFrame(
+        animationFrame
+      );
 
-    iniciarJogo
+      /* Remove problemas */
 
-);
+      problemasAtivos.forEach(
+        (problema) => {
 
-</script>
+          if (problema.elemento) {
+            problema.elemento.remove();
+          }
+
+        }
+      );
+
+      problemasAtivos.length = 0;
+
+    }
+
+    /* =====================================================
+       VITÓRIA
+    ===================================================== */
+
+    function finalizarVitoria() {
+
+      if (!jogoRodando) return;
+
+      pararJogo();
+
+      document.getElementById(
+        "resultadoCaixas"
+      ).textContent =
+        `${caixasCorretas}/${TOTAL_CAIXAS}`;
+
+      document.getElementById(
+        "resultadoPontos"
+      ).textContent =
+        pontuacao;
+
+      document.getElementById(
+        "resultadoProblemas"
+      ).textContent =
+        problemasEliminados;
+
+      document.getElementById(
+        "resultadoErros"
+      ).textContent =
+        erros;
+
+      document.getElementById(
+        "resultadoTempo"
+      ).textContent =
+        `${tempoDecorrido}s`;
+
+      vitoria.style.display =
+        "flex";
+
+    }
+
+    /* =====================================================
+       GAME OVER
+    ===================================================== */
+
+    function finalizarGameOver() {
+
+      if (!jogoRodando) return;
+
+      pararJogo();
+
+      document.getElementById(
+        "gameOverCaixas"
+      ).textContent =
+        `${caixasCorretas}/${TOTAL_CAIXAS}`;
+
+      document.getElementById(
+        "gameOverPontos"
+      ).textContent =
+        pontuacao;
+
+      document.getElementById(
+        "gameOverProblemas"
+      ).textContent =
+        problemasEliminados;
+
+      document.getElementById(
+        "gameOverErros"
+      ).textContent =
+        erros;
+
+      gameOver.style.display =
+        "flex";
+
+    }
+
+    /* =====================================================
+       TEMPO ESGOTADO
+    ===================================================== */
+
+    function finalizarTempoEsgotado() {
+
+      if (!jogoRodando) return;
+
+      pararJogo();
+
+      document.getElementById(
+        "tempoCaixas"
+      ).textContent =
+        `${caixasCorretas}/${TOTAL_CAIXAS}`;
+
+      document.getElementById(
+        "tempoPontos"
+      ).textContent =
+        pontuacao;
+
+      document.getElementById(
+        "tempoProblemas"
+      ).textContent =
+        problemasEliminados;
+
+      document.getElementById(
+        "tempoErros"
+      ).textContent =
+        erros;
+
+      tempoEsgotado.style.display =
+        "flex";
+
+    }
+
+  </script>
 
 </body>
-
 </html>
