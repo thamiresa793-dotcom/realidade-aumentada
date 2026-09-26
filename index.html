@@ -99,7 +99,8 @@ body {
 
 #botaoIniciar,
 #botaoReiniciar,
-#botaoReiniciarTempo {
+#botaoReiniciarTempo,
+#botaoReiniciarErros {
 
     border: none;
     border-radius: 14px;
@@ -504,6 +505,11 @@ body {
     font-size: 29px;
 }
 
+.tituloGameOver {
+    font-size: 38px !important;
+    font-weight: bold;
+}
+
 #mensagemFinal {
 
     max-width: 370px;
@@ -513,15 +519,13 @@ body {
     line-height: 1.5;
 }
 
-#mensagemFinal .engenheiro {
+.engenheiro {
 
     display: block;
 
     margin-top: 20px;
 
     font-size: 25px;
-
-    line-height: 1.25;
 
     font-weight: 800;
 
@@ -545,11 +549,6 @@ body {
     font-size: 17px;
 
     line-height: 1.5;
-}
-
-.tituloGameOver {
-    font-size: 38px !important;
-    font-weight: 900;
 }
 
 
@@ -621,12 +620,12 @@ body {
         você terá <strong>1 minuto</strong>
         para organizar toda a produção.
 
-        <br>
+        <br><br>
 
         <strong>
-            Cuidado com suas decisões,
-            ao atingir 5 erros, a linha de produção
-            será encerrada! ☠️
+            Cuidado com suas decisões, ao atingir
+            5 erros, a linha de produção será
+            encerrada! ☠️
         </strong>
 
     </p>
@@ -834,11 +833,6 @@ body {
 
     <div id="mensagemFinal">
 
-        <strong>
-            5/5 caixas organizadas -
-            desafio concluído!
-        </strong>
-
         <span class="engenheiro">
             👷‍♀️ Você é um excelente<br>
             Engenheiro de Produção!
@@ -871,7 +865,7 @@ body {
 
 <div id="tempoEsgotado">
 
-    <h1>⏰ TEMPO ESGOTADO!</h1>
+    <h1>⏰ Tempo esgotado!</h1>
 
     <p>
 
@@ -990,9 +984,7 @@ const tempoEsgotado =
     );
 
 const gameOver =
-    document.getElementById(
-        "gameOver"
-    );
+    document.getElementById("gameOver");
 
 const erro =
     document.getElementById("erro");
@@ -1720,10 +1712,13 @@ function verificarDestino(dado) {
             quantidadeErros;
 
 
-        /*
-         * NOVA REGRA:
-         * 5 erros = GAME OVER
-         */
+        mensagem.innerText =
+            "❌ Destino incorreto. A caixa voltará para a esteira.";
+
+
+        /* =========================================
+           GAME OVER AO ATINGIR 5 ERROS
+        ========================================= */
 
         if (
             quantidadeErros >= 5
@@ -1734,10 +1729,6 @@ function verificarDestino(dado) {
             return;
 
         }
-
-
-        mensagem.innerText =
-            "❌ Destino incorreto. A caixa voltará para a esteira.";
 
 
         const outras =
