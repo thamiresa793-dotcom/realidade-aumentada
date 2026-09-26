@@ -1,259 +1,1343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <title>Minha Experiência AR</title>
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
+    <title>Desafio da Linha de Produção</title>
 
     <style>
+
         * {
             box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
+
             width: 100%;
             height: 100%;
+
             overflow: hidden;
+
             font-family: Arial, sans-serif;
+
             background: #111;
         }
 
-        /* Tela inicial */
-        #inicio {
+
+        /* =========================================
+           CÂMERA
+        ========================================= */
+
+        #camera {
+
             position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            object-fit: cover;
+
+            z-index: 1;
+        }
+
+
+        /* =========================================
+           ÁREA DO JOGO
+        ========================================= */
+
+        #jogo {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 2;
+
+            display: none;
+
+            touch-action: none;
+        }
+
+
+        /* =========================================
+           TELA INICIAL
+        ========================================= */
+
+        #inicio {
+
+            position: fixed;
+
             inset: 0;
-            z-index: 10;
+
+            z-index: 20;
 
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
 
             padding: 30px;
+
             text-align: center;
 
-            background:
-                radial-gradient(circle at top, #333 0%, #111 55%, #000 100%);
-
             color: white;
+
+            background:
+                linear-gradient(
+                    rgba(0,0,0,0.78),
+                    rgba(0,0,0,0.92)
+                );
         }
+
 
         #inicio h1 {
-            margin: 0 0 15px;
-            font-size: 32px;
+
+            margin: 0 0 12px;
+
+            font-size: 30px;
         }
 
+
+        #inicio h2 {
+
+            margin: 0 0 20px;
+
+            font-size: 20px;
+
+            font-weight: normal;
+        }
+
+
         #inicio p {
-            max-width: 340px;
+
+            max-width: 360px;
+
             margin: 0 0 30px;
-            font-size: 17px;
+
+            font-size: 16px;
+
             line-height: 1.5;
+
             color: #ddd;
         }
 
-        #botaoIniciar {
-            border: none;
-            border-radius: 14px;
-            padding: 16px 30px;
 
-            font-size: 18px;
-            font-weight: bold;
+        #botaoIniciar {
+
+            border: none;
+
+            border-radius: 14px;
+
+            padding: 16px 32px;
 
             background: white;
+
             color: #111;
+
+            font-size: 18px;
+
+            font-weight: bold;
 
             cursor: pointer;
         }
 
+
         #botaoIniciar:active {
-            transform: scale(0.97);
+
+            transform: scale(0.96);
         }
 
-        /* Área da câmera */
-        #experiencia {
-            position: fixed;
-            inset: 0;
-            display: none;
-            background: black;
-        }
 
-        #camera {
+        /* =========================================
+           PAINEL SUPERIOR
+        ========================================= */
+
+        #painel {
+
             position: absolute;
-            inset: 0;
 
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-        }
-
-        /* Elementos sobre a câmera */
-        #interface {
-            position: absolute;
-            inset: 0;
+            top: 15px;
+            left: 15px;
+            right: 15px;
 
             display: flex;
-            flex-direction: column;
+
             justify-content: space-between;
 
-            padding:
-                max(25px, env(safe-area-inset-top))
-                20px
-                max(25px, env(safe-area-inset-bottom))
-                20px;
+            align-items: center;
 
-            pointer-events: none;
+            gap: 10px;
+
+            z-index: 10;
         }
 
-        #titulo {
-            align-self: center;
 
-            padding: 10px 18px;
-            border-radius: 20px;
+        .info {
 
-            background: rgba(0, 0, 0, 0.55);
-            color: white;
+            padding: 10px 14px;
 
-            font-size: 16px;
-        }
-
-        #mensagem {
-            align-self: center;
-
-            margin-bottom: 20px;
-
-            padding: 12px 18px;
             border-radius: 12px;
 
-            background: rgba(0, 0, 0, 0.65);
+            background:
+                rgba(0,0,0,0.72);
+
             color: white;
 
             font-size: 14px;
+
+            font-weight: bold;
+
+            backdrop-filter: blur(5px);
+        }
+
+
+        /* =========================================
+           TÍTULO
+        ========================================= */
+
+        #tituloJogo {
+
+            position: absolute;
+
+            top: 70px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            z-index: 10;
+
+            width: max-content;
+
+            max-width: 90%;
+
+            padding: 9px 16px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(0,0,0,0.65);
+
+            color: white;
+
+            font-size: 14px;
+
             text-align: center;
         }
 
-        #erro {
-            display: none;
 
-            position: fixed;
-            left: 20px;
-            right: 20px;
-            bottom: 30px;
+        /* =========================================
+           LINHA DE PRODUÇÃO
+        ========================================= */
 
-            padding: 16px;
-            border-radius: 12px;
+        #linhaProducao {
 
-            background: rgba(180, 0, 0, 0.9);
+            position: absolute;
+
+            left: 5%;
+
+            right: 5%;
+
+            top: 42%;
+
+            height: 95px;
+
+            border-radius: 18px;
+
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    #444 0px,
+                    #444 25px,
+                    #555 25px,
+                    #555 50px
+                );
+
+            border: 5px solid #222;
+
+            box-shadow:
+                0 8px 20px
+                rgba(0,0,0,0.5);
+        }
+
+
+        /* =========================================
+           ESTEIRA
+        ========================================= */
+
+        #esteira {
+
+            position: absolute;
+
+            top: 50%;
+
+            left: 2%;
+
+            right: 2%;
+
+            height: 7px;
+
+            background: #111;
+
+            transform: translateY(-50%);
+
+            border-radius: 10px;
+        }
+
+
+        /* =========================================
+           ESTAÇÕES
+        ========================================= */
+
+        .estacao {
+
+            position: absolute;
+
+            top: calc(42% + 115px);
+
+            width: 18%;
+
+            min-height: 75px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(0,0,0,0.72);
+
+            border: 2px dashed rgba(255,255,255,0.7);
+
             color: white;
 
             text-align: center;
-            z-index: 20;
+
+            padding: 10px 5px;
+
+            font-size: 11px;
+
+            z-index: 4;
         }
+
+
+        .estacao span {
+
+            display: block;
+
+            font-size: 22px;
+
+            margin-bottom: 3px;
+        }
+
+
+        #estacao1 {
+
+            left: 4%;
+        }
+
+
+        #estacao2 {
+
+            left: 21%;
+        }
+
+
+        #estacao3 {
+
+            left: 41%;
+        }
+
+
+        #estacao4 {
+
+            left: 61%;
+        }
+
+
+        #estacao5 {
+
+            right: 4%;
+        }
+
+
+        /* =========================================
+           CAIXAS
+        ========================================= */
+
+        .caixa {
+
+            position: absolute;
+
+            width: 58px;
+
+            height: 58px;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: white;
+
+            font-size: 26px;
+
+            font-weight: bold;
+
+            cursor: grab;
+
+            z-index: 8;
+
+            touch-action: none;
+
+            box-shadow:
+                0 6px 15px
+                rgba(0,0,0,0.45);
+
+            border: 3px solid rgba(255,255,255,0.8);
+
+            transition:
+                transform 0.15s;
+        }
+
+
+        .caixa:active {
+
+            cursor: grabbing;
+
+            transform: scale(1.1);
+        }
+
+
+        .caixa.correta {
+
+            opacity: 0.55;
+
+            pointer-events: none;
+
+            transform: scale(0.9);
+        }
+
+
+        #caixa1 {
+
+            background: #d35400;
+
+            left: 10%;
+
+            top: 22%;
+        }
+
+
+        #caixa2 {
+
+            background: #2980b9;
+
+            left: 28%;
+
+            top: 25%;
+        }
+
+
+        #caixa3 {
+
+            background: #27ae60;
+
+            left: 46%;
+
+            top: 20%;
+        }
+
+
+        #caixa4 {
+
+            background: #8e44ad;
+
+            left: 64%;
+
+            top: 26%;
+        }
+
+
+        #caixa5 {
+
+            background: #c0392b;
+
+            left: 80%;
+
+            top: 19%;
+        }
+
+
+        /* =========================================
+           MENSAGEM
+        ========================================= */
+
+        #mensagem {
+
+            position: absolute;
+
+            bottom: 25px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 90%;
+
+            max-width: 400px;
+
+            padding: 13px 18px;
+
+            border-radius: 13px;
+
+            background:
+                rgba(0,0,0,0.75);
+
+            color: white;
+
+            font-size: 14px;
+
+            text-align: center;
+
+            z-index: 12;
+
+            backdrop-filter: blur(5px);
+        }
+
+
+        /* =========================================
+           TELA FINAL
+        ========================================= */
+
+        #final {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 30;
+
+            display: none;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: white;
+
+            background:
+                rgba(0,0,0,0.88);
+        }
+
+
+        #final h1 {
+
+            font-size: 32px;
+
+            margin-bottom: 15px;
+        }
+
+
+        #final p {
+
+            font-size: 18px;
+
+            line-height: 1.5;
+
+            max-width: 350px;
+        }
+
+
+        #botaoReiniciar {
+
+            margin-top: 20px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            padding: 14px 25px;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================================
+           ERRO
+        ========================================= */
+
+        #erro {
+
+            position: fixed;
+
+            left: 20px;
+            right: 20px;
+
+            bottom: 25px;
+
+            z-index: 50;
+
+            display: none;
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(180,0,0,0.92);
+
+            color: white;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- TELA INICIAL -->
+
+    <!-- =========================================
+         CÂMERA
+    ========================================= -->
+
+    <video
+        id="camera"
+        autoplay
+        playsinline
+        muted>
+    </video>
+
+
+    <!-- =========================================
+         TELA INICIAL
+    ========================================= -->
+
     <div id="inicio">
 
-        <h1>Minha Experiência AR</h1>
+        <h1>🏭 Linha de Produção</h1>
+
+        <h2>Desafio de Engenharia de Produção</h2>
 
         <p>
-            Prepare-se para uma experiência de realidade aumentada.
-            Toque no botão abaixo para começar.
+
+            Organize as 5 caixas nas estações
+            corretas da linha de produção.
+
+            Arraste cada caixa até o seu destino.
+
         </p>
 
         <button id="botaoIniciar">
-            Iniciar experiência
+
+            Iniciar desafio
+
         </button>
 
     </div>
 
 
-    <!-- EXPERIÊNCIA -->
-    <div id="experiencia">
+    <!-- =========================================
+         JOGO
+    ========================================= -->
 
-        <!-- Câmera -->
-        <video
-            id="camera"
-            autoplay
-            playsinline
-            muted>
-        </video>
+    <div id="jogo">
 
-        <!-- Interface sobre a câmera -->
-        <div id="interface">
 
-            <div id="titulo">
-                REALIDADE AUMENTADA
+        <!-- PAINEL -->
+
+        <div id="painel">
+
+            <div class="info">
+
+                📦 <span id="contador">0</span>/5
+
             </div>
 
-            <div id="mensagem">
-                Câmera ativada
+            <div class="info">
+
+                ⏱️ <span id="tempo">00:00</span>
+
             </div>
 
         </div>
 
+
+        <!-- TÍTULO -->
+
+        <div id="tituloJogo">
+
+            ORGANIZE A LINHA DE PRODUÇÃO
+
+        </div>
+
+
+        <!-- LINHA -->
+
+        <div id="linhaProducao">
+
+            <div id="esteira"></div>
+
+        </div>
+
+
+        <!-- ESTAÇÕES -->
+
+        <div
+            class="estacao"
+            id="estacao1"
+            data-destino="1">
+
+            <span>📥</span>
+
+            MATÉRIA-PRIMA
+
+        </div>
+
+
+        <div
+            class="estacao"
+            id="estacao2"
+            data-destino="2">
+
+            <span>🔀</span>
+
+            SEPARAÇÃO
+
+        </div>
+
+
+        <div
+            class="estacao"
+            id="estacao3"
+            data-destino="3">
+
+            <span>⚙️</span>
+
+            MONTAGEM
+
+        </div>
+
+
+        <div
+            class="estacao"
+            id="estacao4"
+            data-destino="4">
+
+            <span>🔍</span>
+
+            INSPEÇÃO
+
+        </div>
+
+
+        <div
+            class="estacao"
+            id="estacao5"
+            data-destino="5">
+
+            <span>📤</span>
+
+            PRODUTO FINAL
+
+        </div>
+
+
+        <!-- =====================================
+             CAIXAS
+        ===================================== -->
+
+        <div
+            class="caixa"
+            id="caixa1"
+            data-destino="1">
+
+            1
+
+        </div>
+
+
+        <div
+            class="caixa"
+            id="caixa2"
+            data-destino="2">
+
+            2
+
+        </div>
+
+
+        <div
+            class="caixa"
+            id="caixa3"
+            data-destino="3">
+
+            3
+
+        </div>
+
+
+        <div
+            class="caixa"
+            id="caixa4"
+            data-destino="4">
+
+            4
+
+        </div>
+
+
+        <div
+            class="caixa"
+            id="caixa5"
+            data-destino="5">
+
+            5
+
+        </div>
+
+
+        <!-- MENSAGEM -->
+
+        <div id="mensagem">
+
+            Arraste cada caixa para a estação correta.
+
+        </div>
+
+
     </div>
 
 
-    <!-- MENSAGEM DE ERRO -->
+    <!-- =========================================
+         TELA FINAL
+    ========================================= -->
+
+    <div id="final">
+
+        <h1>🎉 Produção concluída!</h1>
+
+        <p>
+
+            Você organizou corretamente
+            as 5 caixas da linha de produção.
+
+        </p>
+
+        <p>
+
+            Tempo:
+            <strong id="tempoFinal">
+                00:00
+            </strong>
+
+        </p>
+
+        <button id="botaoReiniciar">
+
+            Jogar novamente
+
+        </button>
+
+    </div>
+
+
+    <!-- ERRO -->
+
     <div id="erro">
+
         Não foi possível acessar a câmera.
-        Verifique se você autorizou o uso da câmera.
+        Verifique a permissão do navegador.
+
     </div>
 
 
-    <script>
 
-        const botaoIniciar = document.getElementById("botaoIniciar");
-        const inicio = document.getElementById("inicio");
-        const experiencia = document.getElementById("experiencia");
-        const camera = document.getElementById("camera");
-        const erro = document.getElementById("erro");
+<script>
 
-        async function iniciarExperiencia() {
 
-            try {
+/* =========================================
+   VARIÁVEIS
+========================================= */
 
-                // Solicita acesso à câmera
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: {
-                            ideal: "environment"
-                        }
-                    },
-                    audio: false
-                });
+const botaoIniciar =
+    document.getElementById("botaoIniciar");
 
-                // Coloca a câmera na tela
-                camera.srcObject = stream;
+const botaoReiniciar =
+    document.getElementById("botaoReiniciar");
 
-                // Esconde a tela inicial
-                inicio.style.display = "none";
+const inicio =
+    document.getElementById("inicio");
 
-                // Mostra a experiência
-                experiencia.style.display = "block";
+const jogo =
+    document.getElementById("jogo");
 
-            } catch (error) {
+const camera =
+    document.getElementById("camera");
 
-                console.error(error);
+const final =
+    document.getElementById("final");
 
-                erro.style.display = "block";
+const erro =
+    document.getElementById("erro");
 
-            }
-        }
+const contador =
+    document.getElementById("contador");
 
-        botaoIniciar.addEventListener(
-            "click",
-            iniciarExperiencia
+const tempo =
+    document.getElementById("tempo");
+
+const tempoFinal =
+    document.getElementById("tempoFinal");
+
+const mensagem =
+    document.getElementById("mensagem");
+
+
+let caixasCorretas = 0;
+
+let segundos = 0;
+
+let intervaloTempo = null;
+
+let caixaSelecionada = null;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+async function iniciarJogo() {
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+
+                    facingMode: {
+                        ideal: "environment"
+                    }
+
+                },
+
+                audio: false
+
+            });
+
+
+        camera.srcObject = stream;
+
+
+        inicio.style.display = "none";
+
+        jogo.style.display = "block";
+
+
+        iniciarCronometro();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        erro.style.display = "block";
+
+    }
+
+}
+
+
+
+/* =========================================
+   CRONÔMETRO
+========================================= */
+
+function iniciarCronometro() {
+
+    segundos = 0;
+
+    atualizarTempo();
+
+
+    intervaloTempo =
+        setInterval(function() {
+
+            segundos++;
+
+            atualizarTempo();
+
+        }, 1000);
+
+}
+
+
+
+function atualizarTempo() {
+
+    const minutos =
+        Math.floor(segundos / 60);
+
+    const segundosRestantes =
+        segundos % 60;
+
+
+    tempo.innerText =
+        String(minutos).padStart(2, "0")
+        + ":"
+        +
+        String(segundosRestantes).padStart(2, "0");
+
+}
+
+
+
+/* =========================================
+   CAIXAS
+========================================= */
+
+const caixas =
+    document.querySelectorAll(".caixa");
+
+
+caixas.forEach(function(caixa) {
+
+    caixa.addEventListener(
+        "pointerdown",
+        iniciarArraste
+    );
+
+});
+
+
+
+/* =========================================
+   COMEÇAR ARRASTE
+========================================= */
+
+function iniciarArraste(evento) {
+
+    caixaSelecionada =
+        evento.currentTarget;
+
+
+    const rect =
+        caixaSelecionada.getBoundingClientRect();
+
+
+    offsetX =
+        evento.clientX - rect.left;
+
+    offsetY =
+        evento.clientY - rect.top;
+
+
+    caixaSelecionada.setPointerCapture(
+        evento.pointerId
+    );
+
+
+    caixaSelecionada.addEventListener(
+        "pointermove",
+        moverCaixa
+    );
+
+
+    caixaSelecionada.addEventListener(
+        "pointerup",
+        soltarCaixa
+    );
+
+}
+
+
+
+/* =========================================
+   MOVER CAIXA
+========================================= */
+
+function moverCaixa(evento) {
+
+    if (!caixaSelecionada) {
+        return;
+    }
+
+
+    const jogoRect =
+        jogo.getBoundingClientRect();
+
+
+    let x =
+        evento.clientX
+        -
+        jogoRect.left
+        -
+        offsetX;
+
+
+    let y =
+        evento.clientY
+        -
+        jogoRect.top
+        -
+        offsetY;
+
+
+    const limiteX =
+        jogoRect.width
+        -
+        caixaSelecionada.offsetWidth;
+
+
+    const limiteY =
+        jogoRect.height
+        -
+        caixaSelecionada.offsetHeight;
+
+
+    x =
+        Math.max(
+            0,
+            Math.min(x, limiteX)
         );
 
-    </script>
+
+    y =
+        Math.max(
+            0,
+            Math.min(y, limiteY)
+        );
+
+
+    caixaSelecionada.style.left =
+        x + "px";
+
+    caixaSelecionada.style.top =
+        y + "px";
+
+}
+
+
+
+/* =========================================
+   SOLTAR CAIXA
+========================================= */
+
+function soltarCaixa(evento) {
+
+    if (!caixaSelecionada) {
+        return;
+    }
+
+
+    const caixa =
+        caixaSelecionada;
+
+
+    caixa.removeEventListener(
+        "pointermove",
+        moverCaixa
+    );
+
+
+    caixa.removeEventListener(
+        "pointerup",
+        soltarCaixa
+    );
+
+
+    verificarDestino(caixa);
+
+
+    caixaSelecionada = null;
+
+}
+
+
+
+/* =========================================
+   VERIFICAR DESTINO
+========================================= */
+
+function verificarDestino(caixa) {
+
+    const numero =
+        caixa.dataset.destino;
+
+
+    const estacao =
+        document.getElementById(
+            "estacao" + numero
+        );
+
+
+    const caixaRect =
+        caixa.getBoundingClientRect();
+
+
+    const estacaoRect =
+        estacao.getBoundingClientRect();
+
+
+    const centroCaixaX =
+        caixaRect.left
+        +
+        caixaRect.width / 2;
+
+
+    const centroCaixaY =
+        caixaRect.top
+        +
+        caixaRect.height / 2;
+
+
+    const dentroDaEstacao =
+
+        centroCaixaX >= estacaoRect.left
+        &&
+        centroCaixaX <=
+        estacaoRect.right
+
+        &&
+
+        centroCaixaY >= estacaoRect.top
+        &&
+        centroCaixaY <=
+        estacaoRect.bottom;
+
+
+
+    if (dentroDaEstacao) {
+
+        caixa.classList.add("correta");
+
+        caixasCorretas++;
+
+        contador.innerText =
+            caixasCorretas;
+
+
+        mensagem.innerText =
+            "✅ Caixa " +
+            numero +
+            " organizada corretamente!";
+
+
+        if (caixasCorretas === 5) {
+
+            finalizarJogo();
+
+        }
+
+    }
+
+    else {
+
+        mensagem.innerText =
+            "❌ Essa caixa não está na estação correta. Tente novamente.";
+
+    }
+
+}
+
+
+
+/* =========================================
+   FINALIZAR
+========================================= */
+
+function finalizarJogo() {
+
+    clearInterval(intervaloTempo);
+
+
+    tempoFinal.innerText =
+        tempo.innerText;
+
+
+    setTimeout(function() {
+
+        jogo.style.display = "none";
+
+        final.style.display = "flex";
+
+    }, 700);
+
+}
+
+
+
+/* =========================================
+   REINICIAR
+========================================= */
+
+botaoReiniciar.addEventListener(
+    "click",
+    function() {
+
+        location.reload();
+
+    }
+);
+
+
+
+/* =========================================
+   BOTÃO INICIAR
+========================================= */
+
+botaoIniciar.addEventListener(
+    "click",
+    iniciarJogo
+);
+
+
+</script>
 
 </body>
+
 </html>
