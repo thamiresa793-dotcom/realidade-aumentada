@@ -626,17 +626,6 @@ body {
     width: 55px;
     height: 55px;
 
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,0.95);
-
-    border:
-        3px solid #7d3044;
-
-    box-shadow:
-        0 5px 15px rgba(0,0,0,0.45);
-
     font-size: 30px;
 
     cursor: pointer;
@@ -644,20 +633,6 @@ body {
     pointer-events: auto;
 
     z-index: 14;
-}
-
-.problema::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: -5px;
-
-    border-radius: 50%;
-
-    border:
-        2px solid rgba(125,48,68,0.35);
 }
 
 
@@ -953,7 +928,13 @@ body {
         <br><br>
 
         Se deixar passar, você perde
-        os pontos daquele problema.
+        os pontos daquele problema
+        <strong>e a esteira ficará mais rápida.</strong>
+
+        <br><br>
+
+        ⚠️ Quanto mais problemas você deixar
+        passar, mais rápido ficará o processo.
 
         <br><br>
 
@@ -1647,7 +1628,12 @@ const BONUS_TEMPO = 5;
 
 const PONTOS_PARA_BONUS = 30;
 
-const VELOCIDADE_ESTEIRA = 0.022;
+const VELOCIDADE_ESTEIRA_INICIAL = 0.022;
+
+const AUMENTO_VELOCIDADE_ESTEIRA = 0.001;
+
+let velocidadeEsteira =
+    VELOCIDADE_ESTEIRA_INICIAL;
 
 const DISTANCIA_MINIMA = 180;
 
@@ -1831,6 +1817,10 @@ async function iniciarJogo() {
 
         ultimoBonus =
             0;
+
+
+        velocidadeEsteira =
+            VELOCIDADE_ESTEIRA_INICIAL;
 
 
         contador.innerText =
@@ -2072,7 +2062,7 @@ function iniciarEsteira() {
 
                 dado.x +=
 
-                    VELOCIDADE_ESTEIRA *
+                    velocidadeEsteira *
                     60;
 
 
@@ -2949,6 +2939,15 @@ function perderPontos(
 
     pontuacaoElemento.innerText =
         pontuacao;
+
+
+    /* -----------------------------------------------
+       AUMENTA SOMENTE A VELOCIDADE DA ESTEIRA
+       +0.001 a cada problema não solucionado
+    ----------------------------------------------- */
+
+    velocidadeEsteira +=
+        AUMENTO_VELOCIDADE_ESTEIRA;
 
 
     mostrarPontos(
